@@ -2,10 +2,11 @@ import Menu from "../molecules/Menu";
 import List from "../atoms/List";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import Submenu from "../molecules/Submenu";
 
 export default function Navbar() {
   return (
-    <div className="navbar bg-base-100 shadow">
+    <nav className="navbar bg-base-100 shadow">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
@@ -32,6 +33,39 @@ export default function Navbar() {
             }}
           >
             <List>
+              <Link to="/">
+                <Icon
+                  icon="material-symbols:home-outline-rounded"
+                  width="24"
+                  height="24"
+                />
+                Beranda
+              </Link>
+            </List>
+
+            <List>
+              <Submenu
+                label={
+                  <>
+                    {" "}
+                    <Icon
+                      icon="material-symbols:settings"
+                      width="24"
+                      height="24"
+                    />
+                    Pengaturan
+                  </>
+                }
+              >
+                <ul>
+                  <List>
+                    <Link to="/setting/criteria">Skor Kriteria</Link>
+                  </List>
+                </ul>
+              </Submenu>
+            </List>
+
+            <List>
               <Link to="/login">
                 <Icon
                   icon="material-symbols:exit-to-app-rounded"
@@ -46,7 +80,7 @@ export default function Navbar() {
       </div>
       <div className="navbar-center">
         <Link to="/" className="btn btn-ghost text-xl">
-          Amar Store
+          Toko Amar
         </Link>
       </div>
       <div className="navbar-end">
@@ -56,6 +90,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    </div>
+    </nav>
   );
 }

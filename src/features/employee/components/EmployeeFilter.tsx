@@ -1,32 +1,13 @@
-import {
-  ButtonHTMLAttributes,
-  FormHTMLAttributes,
-  InputHTMLAttributes,
-} from "react";
 import Input from "../../../shared/components/atoms/Input";
 import Form from "../../../shared/components/molecules/Form";
 import Button from "../../../shared/components/atoms/Button";
 import { Icon } from "@iconify/react";
 import Label from "../../../shared/components/atoms/Label";
+import EmployeeFilterAttributes from "../types/EmployeeFilterAttributes";
 
 export default function EmployeeFilter() {
-  const searchAttr: InputHTMLAttributes<HTMLInputElement> = {
-    type: "text",
-    name: "search-employee",
-    placeholder: "Cth : Nama,NIP,Skor",
-    className: "input input-bordered w-full max-w-xs",
-  };
-  const buttAttr: ButtonHTMLAttributes<HTMLButtonElement> = {
-    type: "submit",
-    className: "btn btn-primary btn-square",
-  };
-  const buttResetAttr: ButtonHTMLAttributes<HTMLButtonElement> = {
-    type: "reset",
-    className: "btn btn-primary btn-outline btn-square",
-  };
-  const formAttr: FormHTMLAttributes<HTMLFormElement> = {
-    className: "flex items-end gap-2 ",
-  };
+  const { buttAttr, buttResetAttr, formAttr, searchAttr } =
+    EmployeeFilterAttributes;
 
   return (
     <Form attributes={formAttr}>

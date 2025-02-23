@@ -1,4 +1,3 @@
-import React from "react";
 import Table from "../../../shared/components/organisms/Table";
 import EmployeeFilter from "./EmployeeFilter";
 

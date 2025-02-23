@@ -2,13 +2,13 @@ import React from "react";
 
 interface IProps {
   attributes: React.InputHTMLAttributes<HTMLInputElement>;
-  chidlren?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
-const Input = ({ attributes, chidlren }: IProps) => {
+const Input = ({ attributes, children }: IProps) => {
   return (
     <>
-      {chidlren}
+      {children}
       <input {...attributes} />
     </>
   );

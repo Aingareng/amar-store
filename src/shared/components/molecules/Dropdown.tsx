@@ -4,9 +4,19 @@ import { Link } from "react-router-dom";
 import Button from "../atoms/Button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-export default function Dropdown() {
+interface IProps {
+  itemIndex?: number;
+}
+
+export default function Dropdown({ itemIndex }: IProps) {
+  let menuPosition = "dropdown-left dropdown-end";
+
+  if (itemIndex === 1) {
+    menuPosition = "dropdown-end";
+  }
+
   return (
-    <div className="dropdown dropdown-left dropdown-end">
+    <div className={`dropdown ${menuPosition}`}>
       <Button
         attributes={{
           tabIndex: 0,
@@ -23,7 +33,7 @@ export default function Dropdown() {
         }}
       >
         <List>
-          <Link to="/">Edit</Link>
+          <Link to={`/employee-details/${itemIndex}`}>Detail</Link>
         </List>
         <List>
           <Link to="/">Hapus</Link>

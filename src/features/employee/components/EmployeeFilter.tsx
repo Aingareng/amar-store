@@ -4,10 +4,28 @@ import Button from "../../../shared/components/atoms/Button";
 import { Icon } from "@iconify/react";
 import Label from "../../../shared/components/atoms/Label";
 import EmployeeFilterAttributes from "../types/EmployeeFilterAttributes";
+import { useRef } from "react";
 
-export default function EmployeeFilter() {
+interface IProps {
+  onSearch: (input: string) => void;
+}
+
+export default function EmployeeFilter({ onSearch }: IProps) {
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const { buttAttr, buttResetAttr, formAttr, searchAttr } =
     EmployeeFilterAttributes;
+
+  formAttr.action = handleSearch;
+  searchAttr.defaultValue = searchInputRef.current?.value;
+  buttResetAttr.onClick = handleReset;
+
+  function handleSearch() {
+    onSearch(searchInputRef.current?.value || "");
+  }
+  function handleReset() {
+    searchInputRef.current!.value = "";
+    onSearch("");
+  }
 
   return (
     <Form attributes={formAttr}>
@@ -16,7 +34,7 @@ export default function EmployeeFilter() {
         leftLabel="Cari Pegawai"
         className="w-full max-w-xs"
       >
-        <Input attributes={searchAttr} />
+        <Input ref={searchInputRef} attributes={searchAttr} />
       </Label>
       <div className="flex gap-1">
         <Button attributes={buttAttr}>

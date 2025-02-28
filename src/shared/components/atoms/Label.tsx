@@ -5,6 +5,7 @@ interface IProps {
   children: React.ReactNode;
   rightLabel?: string;
   leftLabel?: string;
+  bottomLeftLabel?: React.ReactNode;
   [key: string]: unknown;
 }
 
@@ -13,6 +14,7 @@ const Label = ({
   labelType = "normal-input",
   children,
   rightLabel = "",
+  bottomLeftLabel,
   ...other
 }: IProps) => {
   const labelTypeClasses =
@@ -33,6 +35,7 @@ const Label = ({
     <label className={`${labelTypeClasses} `} {...other}>
       {labelElement}
       {children}
+      {bottomLeftLabel && bottomLeftLabel}
     </label>
   );
 };

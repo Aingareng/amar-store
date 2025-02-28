@@ -28,7 +28,6 @@ export default function EmployeeDetails() {
   const { slug } = useParams<{ slug: string }>();
 
   const employee = dummyData.find((item) => item.id === +slug!);
-  // console.log(employee);
   return (
     <DashboardLayout>
       <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl shadow">

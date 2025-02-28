@@ -30,10 +30,11 @@ export interface IEmployeePayload {
   email: string;
   password: string;
   phone: string;
-  isMale: boolean;
-  age: Date;
+  // isMale: boolean;
+  age: string;
+  gender: "male" | "female";
   education: string;
-  experience: Date;
+  experience: string;
   leadership: string;
   position: string;
 }

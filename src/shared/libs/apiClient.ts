@@ -65,12 +65,12 @@ export class ApiClient {
     });
   };
 
-  public post = <T>(
+  public post = async <T>(
     endpoint: string,
     data: unknown,
     options: RequestInit = {}
   ) => {
-    return this.request<T>(endpoint, {
+    return await this.request<T>(endpoint, {
       ...options,
       method: "POST",
       body: JSON.stringify(data),

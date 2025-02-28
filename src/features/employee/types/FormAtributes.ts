@@ -1,3 +1,9 @@
+const inputUsernameAttr: React.InputHTMLAttributes<HTMLInputElement> = {
+  type: "text",
+  name: "username",
+  className: "input input-bordered w-full",
+  placeholder: "Masukan Nama Lengkap",
+};
 const inputEmailAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "email",
   name: "email",
@@ -19,7 +25,7 @@ const inputPosition: React.InputHTMLAttributes<HTMLInputElement> = {
 };
 const inputPhoneNumber: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "text",
-  name: "phone-number",
+  name: "phone",
   className: "input input-bordered w-full",
   placeholder: "Cth: 08xxxxxxx",
 };
@@ -28,11 +34,13 @@ const genderManAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   name: "gender",
   className: "radio radio-primary",
   defaultChecked: true,
+  value: "male",
 };
 const genderWomenAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "radio",
   name: "gender",
   className: "radio radio-primary",
+  value: "female",
 };
 const formAttr: React.FormHTMLAttributes<HTMLFormElement> = {
   className: "grid grid-cols-1 gap-2",
@@ -42,7 +50,7 @@ const submitAttr: React.ButtonHTMLAttributes<HTMLButtonElement> = {
   className: "btn btn-primary w-max",
 };
 const selectAttr: React.SelectHTMLAttributes<HTMLSelectElement> = {
-  name: "education-level",
+  name: "education",
   className: "select select-bordered",
 };
 const ageAttr: React.InputHTMLAttributes<HTMLInputElement> = {
@@ -76,6 +84,7 @@ const createEmployeeAttributes = {
   leaderAttr,
   selectAttr,
   submitAttr,
+  inputUsernameAttr,
 };
 
 export default createEmployeeAttributes;

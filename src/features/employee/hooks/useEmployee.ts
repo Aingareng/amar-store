@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { getEmployees } from "../api/employee";
-import { IEmployeeQueryParams } from "../types/employees";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { createEmployee, getEmployees } from "../api/employee";
+import { IEmployeePayload, IEmployeeQueryParams } from "../types/employees";
 
 export default function useEmployees(params?: IEmployeeQueryParams) {
+  const queryClient = useQueryClient();
   const {
     data: employees,
     error,
@@ -16,5 +17,20 @@ export default function useEmployees(params?: IEmployeeQueryParams) {
     queryFn: () => getEmployees(params as IEmployeeQueryParams),
   });
 
-  return { employees, error, isError, isLoading, isPending, isFetched };
+  const createMutation = useMutation({
+    mutationFn: (newEmployee: IEmployeePayload) => createEmployee(newEmployee),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+    },
+  });
+
+  return {
+    employees,
+    error,
+    isError,
+    isLoading,
+    isPending,
+    isFetched,
+    createEmployee: createMutation.mutate,
+  };
 }

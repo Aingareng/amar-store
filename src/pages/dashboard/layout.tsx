@@ -5,6 +5,7 @@ interface IProps {
   children: React.ReactNode;
 }
 export default function DashboardLayout({ children }: IProps) {
+  console.log("first");
   return (
     <>
       <header>

@@ -25,3 +25,15 @@ export interface Employees {
   rangking: number;
   position: string;
 }
+export interface IEmployeePayload {
+  username: string;
+  email: string;
+  password: string;
+  phone: string;
+  isMale: boolean;
+  age: Date;
+  education: string;
+  experience: Date;
+  leadership: string;
+  position: string;
+}

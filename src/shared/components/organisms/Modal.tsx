@@ -19,7 +19,7 @@ export default function Modal({ ref, children }: IProps) {
   );
   return createPortal(
     <dialog ref={ref} className="modal">
-      <div className="modal-box">
+      <div className="modal-box sm:modal-middle">
         <form method="dialog">
           {/* if there is a button in form, it will close the modal */}
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">

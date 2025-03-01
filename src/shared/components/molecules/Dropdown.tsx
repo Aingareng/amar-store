@@ -3,16 +3,27 @@ import List from "../atoms/List";
 import { Link } from "react-router-dom";
 import Button from "../atoms/Button";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { ButtonHTMLAttributes } from "react";
 
 interface IProps {
   itemIndex?: number;
+  onAction: (itemId: number) => void;
 }
 
-export default function Dropdown({ itemIndex }: IProps) {
+export default function Dropdown({ itemIndex, onAction }: IProps) {
   let menuPosition = "dropdown-left dropdown-end";
 
   if (itemIndex === 1) {
     menuPosition = "dropdown-end";
+  }
+
+  const deleteButtonAttr: ButtonHTMLAttributes<HTMLButtonElement> = {
+    type: "button",
+    onClick: () => handleClickDestroy(itemIndex as number),
+  };
+
+  function handleClickDestroy(id: number) {
+    onAction(id);
   }
 
   return (
@@ -36,7 +47,7 @@ export default function Dropdown({ itemIndex }: IProps) {
           <Link to={`/employee-details/${itemIndex}`}>Detail</Link>
         </List>
         <List>
-          <Link to="/">Hapus</Link>
+          <Button attributes={deleteButtonAttr}>Hapus</Button>
         </List>
       </Menu>
     </div>

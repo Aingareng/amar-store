@@ -1,5 +1,10 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { createEmployee, getEmployees } from "../api/employee";
+import {
+  createEmployee,
+  getEmployees,
+  destroyEmployee,
+  editEmployee,
+} from "../api/employee";
 import { IEmployeePayload, IEmployeeQueryParams } from "../types/employees";
 
 export default function useEmployees(params?: IEmployeeQueryParams) {
@@ -24,6 +29,23 @@ export default function useEmployees(params?: IEmployeeQueryParams) {
     },
   });
 
+  const destroyMutaion = useMutation({
+    mutationFn: (params: { id: string }) => destroyEmployee(params),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+    },
+  });
+
+  type payloadEditType = {
+    id: string;
+    employeeData: IEmployeePayload;
+  };
+
+  const editMutation = useMutation({
+    mutationFn: ({ id, employeeData }: payloadEditType) =>
+      editEmployee({ id }, employeeData),
+  });
+
   return {
     employees,
     error,
@@ -31,6 +53,8 @@ export default function useEmployees(params?: IEmployeeQueryParams) {
     isLoading,
     isPending,
     isFetched,
-    createEmployee: createMutation.mutate,
+    createEmployee: createMutation.mutateAsync,
+    editEmployee: editMutation.mutateAsync,
+    deleteEmployee: destroyMutaion.mutateAsync,
   };
 }

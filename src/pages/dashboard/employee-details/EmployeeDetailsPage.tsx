@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import DashboardLayout from "../layout";
 import { dummyData } from "../../../shared/utils/dummy";
 import Whatsapp from "../../../shared/icons/Whatsapp";
 import Label from "../../../shared/components/atoms/Label";
@@ -29,7 +28,7 @@ export default function EmployeeDetails() {
 
   const employee = dummyData.find((item) => item.id === +slug!);
   return (
-    <DashboardLayout>
+    <>
       <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl shadow">
         <section className="flex items-center gap-2">
           {/* Avatar */}
@@ -121,6 +120,6 @@ export default function EmployeeDetails() {
           </div>
         </section>
       </main>
-    </DashboardLayout>
+    </>
   );
 }

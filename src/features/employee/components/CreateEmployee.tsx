@@ -13,9 +13,10 @@ import { IEmployeePayload } from "../types/employees";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
+  onShowToast: (status: boolean) => void;
 }
 
-export default function CreateEmployee({ ref }: IProps) {
+export default function CreateEmployee({ ref, onShowToast }: IProps) {
   const {
     ageAttr,
     experienceAttr,
@@ -33,7 +34,7 @@ export default function CreateEmployee({ ref }: IProps) {
   } = createEmployeeAttributes;
   const { createEmployee } = useEmployees();
 
-  function handleAddEmployee(prevState: unknown, formData: FormData) {
+  async function handleAddEmployee(prevState: unknown, formData: FormData) {
     const data: IEmployeePayload = {
       username: (formData.get("username") as string) || "",
       email: (formData.get("email") as string) || "",
@@ -50,14 +51,13 @@ export default function CreateEmployee({ ref }: IProps) {
     const validationErrors = validateEmployeeData(data);
 
     if (Object.keys(validationErrors.errors).length > 0) {
-      console.log("first");
       return {
         errors: validationErrors.errors,
         enteredValue: data,
       };
     }
 
-    createEmployee({
+    const response = await createEmployee({
       username: data.username,
       email: data.email,
       password: data.password,
@@ -69,6 +69,13 @@ export default function CreateEmployee({ ref }: IProps) {
       leadership: data.leadership,
       gender: data.gender,
     });
+
+    if (response.status !== 400 && response.status !== 500) {
+      onShowToast(true);
+      setTimeout(() => {
+        onShowToast(false);
+      }, 3000);
+    }
 
     return { errors: null };
   }

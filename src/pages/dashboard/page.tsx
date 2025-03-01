@@ -1,12 +1,15 @@
-import { ButtonHTMLAttributes, useRef } from "react";
+import { ButtonHTMLAttributes, useRef, useState } from "react";
 import Employees from "../../features/employee/components/Employees";
 import Button from "../../shared/components/atoms/Button";
 import DashboardLayout from "./layout";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import CreateEmployee from "../../features/employee/components/CreateEmployee";
+import Toast from "../../shared/components/molecules/Toast";
+import Alert from "../../shared/components/atoms/Alert";
 
 export default function Home() {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [toastStatus, setToastStatus] = useState(false);
 
   const btnAttt: ButtonHTMLAttributes<HTMLButtonElement> = {
     className: "btn btn-primary w-max ",
@@ -14,9 +17,21 @@ export default function Home() {
       dialogRef.current?.showModal();
     },
   };
+
+  function handleShowToast(status: boolean) {
+    setToastStatus(status);
+    dialogRef.current?.close();
+  }
   return (
-    <DashboardLayout>
-      <CreateEmployee ref={dialogRef} />
+    <>
+      <CreateEmployee ref={dialogRef} onShowToast={handleShowToast} />
+      {toastStatus && (
+        <Toast>
+          <Alert>
+            <span>Berhasil menambahkan Staff</span>
+          </Alert>
+        </Toast>
+      )}
 
       <section className="grid grid-cols-1 gap-5">
         <header className=" flex justify-between items-center">
@@ -32,6 +47,6 @@ export default function Home() {
         </header>
         <Employees />
       </section>
-    </DashboardLayout>
+    </>
   );
 }

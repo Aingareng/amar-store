@@ -20,10 +20,10 @@ export class ApiClient {
     this.baseUrl = endpoint;
   }
 
-  private async request<T>(
+  private async request<ResponseType>(
     endpoint: string,
     options: RequestInit = {}
-  ): Promise<T> {
+  ): Promise<ResponseType> {
     const url = `${this.baseUrl}${endpoint}`;
     const headers = options.body
       ? {
@@ -51,7 +51,7 @@ export class ApiClient {
     return await response.json();
   }
 
-  public get = async <T>(
+  public get = async <ResponseType>(
     endpoint: string,
     params?: Record<string, string>,
     options: RequestInit = {}
@@ -59,20 +59,50 @@ export class ApiClient {
     const queryString = params
       ? "?" + new URLSearchParams(params).toString()
       : "";
-    return await this.request<T>(`${endpoint}${queryString}`, {
+    return await this.request<ResponseType>(`${endpoint}${queryString}`, {
       ...options,
       method: "GET",
     });
   };
 
-  public post = async <T>(
+  public post = async <ResponseType>(
     endpoint: string,
     data: unknown,
     options: RequestInit = {}
   ) => {
-    return await this.request<T>(endpoint, {
+    return await this.request<ResponseType>(endpoint, {
       ...options,
       method: "POST",
+      body: JSON.stringify(data),
+    });
+  };
+  public delete = async <ResponseType>(
+    endpoint: string,
+    params?: Record<string, string>,
+    options: RequestInit = {}
+  ) => {
+    const queryString = params
+      ? "?" + new URLSearchParams(params).toString()
+      : "";
+
+    return await this.request<ResponseType>(`${endpoint}${queryString}`, {
+      ...options,
+      method: "DELETE",
+    });
+  };
+  public put = async <ResponseType>(
+    endpoint: string,
+    data: unknown,
+    params?: Record<string, string>,
+    option: RequestInit = {}
+  ) => {
+    const queryString = params
+      ? "?" + new URLSearchParams(params).toString()
+      : "";
+
+    return await this.request<ResponseType>(`${endpoint}${queryString}`, {
+      ...option,
+      method: "PUT",
       body: JSON.stringify(data),
     });
   };

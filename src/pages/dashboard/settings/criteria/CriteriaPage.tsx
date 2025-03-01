@@ -1,4 +1,3 @@
-import DashboardLayout from "../../layout";
 import Form from "../../../../shared/components/molecules/Form";
 import createEmployeeAttributes from "../../../../features/employee/types/FormAtributes";
 import Label from "../../../../shared/components/atoms/Label";
@@ -18,7 +17,7 @@ export default function CriteriaPage() {
     inputSkillAttr,
   } = criteriaPageAttributes;
   return (
-    <DashboardLayout>
+    <>
       <section className="grid grid-cols-1 gap-5">
         <header className=" flex justify-between items-center">
           <h1 className="text-3xl font-bold">Pegaturan Kriteria</h1>
@@ -55,6 +54,6 @@ export default function CriteriaPage() {
           </footer>
         </Form>
       </section>
-    </DashboardLayout>
+    </>
   );
 }

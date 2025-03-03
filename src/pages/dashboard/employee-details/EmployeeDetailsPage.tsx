@@ -12,6 +12,7 @@ import { ChangeEvent, useActionState, useEffect, useState } from "react";
 import { validateEmployeeData } from "../../../features/employee/utils/createEmployeeValidation";
 import Toast from "../../../shared/components/molecules/Toast";
 import Alert from "../../../shared/components/atoms/Alert";
+import getInitials from "../../../shared/utils/initialString";
 
 export default function EmployeeDetails() {
   const {
@@ -186,7 +187,6 @@ export default function EmployeeDetails() {
   const [formState, formAction] = useActionState(handleUpdateEmployee, {
     errors: null,
   });
-  console.log("🚀 ~ EmployeeDetails ~ formState:", formState);
 
   formAttr.action = formAction;
 
@@ -216,7 +216,7 @@ export default function EmployeeDetails() {
           {/* Avatar */}
           <div className="avatar placeholder">
             <div className="bg-primary text-neutral-content w-16 rounded-full">
-              <span className="text-2xl">A</span>
+              <span className="text-2xl">{getInitials(employee.username)}</span>
             </div>
           </div>
           {/* Name and phone number */}

@@ -3,6 +3,7 @@ import List from "../atoms/List";
 import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Submenu from "../molecules/Submenu";
+import getInitials from "../../utils/initialString";
 
 export default function Navbar() {
   return (
@@ -86,7 +87,7 @@ export default function Navbar() {
       <div className="navbar-end">
         <div className="avatar placeholder">
           <div className="bg-primary text-neutral-content w-12 rounded-full">
-            <span className="text-xl">A</span>
+            <span className="text-xl">{getInitials("Toko Amar")}</span>
           </div>
         </div>
       </div>

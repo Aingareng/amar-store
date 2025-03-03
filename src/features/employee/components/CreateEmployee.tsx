@@ -1,4 +1,4 @@
-import { ForwardedRef, useActionState } from "react";
+import { ForwardedRef, useState, ChangeEvent, useActionState } from "react";
 import Modal from "../../../shared/components/organisms/Modal";
 import Form from "../../../shared/components/molecules/Form";
 import Label from "../../../shared/components/atoms/Label";
@@ -17,58 +17,60 @@ interface IProps {
 }
 
 export default function CreateEmployee({ ref, onShowToast }: IProps) {
-  const {
-    ageAttr,
-    experienceAttr,
-    formAttr,
-    genderManAttr,
-    genderWomenAttr,
-    inputEmailAttr,
-    inputIdentityNumber,
-    inputPhoneNumber,
-    inputPosition,
-    leaderAttr,
-    selectAttr,
-    submitAttr,
-    inputUsernameAttr,
-  } = createEmployeeAttributes;
   const { createEmployee } = useEmployees();
 
-  async function handleAddEmployee(prevState: unknown, formData: FormData) {
-    const data: IEmployeePayload = {
-      username: (formData.get("username") as string) || "",
-      email: (formData.get("email") as string) || "",
-      password: (formData.get("password") as string) || "",
-      position: (formData.get("position") as string) || "",
-      phone: (formData.get("phone") as string) || "",
-      gender: (formData.get("gender") as "male" | "female") || "male",
-      experience: formData.get("experience") as string,
-      leadership: formData.get("leadership") as string,
-      age: formData.get("age") as string,
-      education: (formData.get("education") as string) || "",
-    };
+  // State untuk form inputs
+  const [formData, setFormData] = useState<IEmployeePayload>({
+    username: "",
+    email: "",
+    password: "",
+    position: "",
+    phone: "",
+    gender: "male",
+    experience: "",
+    leadership: "",
+    age: "",
+    education: "",
+  });
 
-    const validationErrors = validateEmployeeData(data);
+  // Handler untuk input text
+  function handleTextInputChange(
+    field: keyof IEmployeePayload,
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: event.target.value,
+    }));
+  }
+
+  // Handler untuk select
+  function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
+    setFormData((prev) => ({
+      ...prev,
+      education: event.target.value,
+    }));
+  }
+
+  // Handler untuk radio button
+  function handleGenderChange(event: ChangeEvent<HTMLInputElement>) {
+    setFormData((prev) => ({
+      ...prev,
+      gender: event.target.value as "male" | "female",
+    }));
+  }
+
+  async function handleAddEmployee(prevState: unknown, _: FormData) {
+    const validationErrors = validateEmployeeData(formData);
 
     if (Object.keys(validationErrors.errors).length > 0) {
       return {
         errors: validationErrors.errors,
-        enteredValue: data,
+        enteredValue: formData,
       };
     }
 
-    const response = await createEmployee({
-      username: data.username,
-      email: data.email,
-      password: data.password,
-      position: data.position,
-      phone: data.phone,
-      age: data.age,
-      education: data.education,
-      experience: data.experience,
-      leadership: data.leadership,
-      gender: data.gender,
-    });
+    const response = await createEmployee(formData);
 
     if (response.status !== 400 && response.status !== 500) {
       onShowToast(true);
@@ -92,16 +94,7 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
     );
   }
 
-  inputUsernameAttr.defaultValue = formState.enteredValue?.username;
-  inputEmailAttr.defaultValue = formState.enteredValue?.email;
-  inputIdentityNumber.defaultValue = formState.enteredValue?.password;
-  inputPhoneNumber.defaultValue = formState.enteredValue?.phone;
-  inputPosition.defaultValue = formState.enteredValue?.position;
-  leaderAttr.defaultValue = formState.enteredValue?.leadership;
-  selectAttr.defaultValue = formState.enteredValue?.education;
-  ageAttr.defaultValue = formState.enteredValue?.age;
-  experienceAttr.defaultValue = formState.enteredValue?.experience;
-
+  const { formAttr, submitAttr } = createEmployeeAttributes;
   formAttr.action = formAction;
 
   return (
@@ -117,7 +110,16 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                 formState.errors?.username as string
               )}
             >
-              <Input attributes={inputUsernameAttr} />
+              <Input
+                attributes={{
+                  type: "text",
+                  name: "username",
+                  className: "input input-bordered w-full",
+                  placeholder: "Masukan Nama Lengkap",
+                  value: formData.username,
+                  onChange: (e) => handleTextInputChange("username", e),
+                }}
+              />
             </Label>
             <Label
               labelType="form-control"
@@ -126,7 +128,16 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                 formState.errors?.email as string
               )}
             >
-              <Input attributes={inputEmailAttr} />
+              <Input
+                attributes={{
+                  type: "email",
+                  name: "email",
+                  className: "input input-bordered w-full",
+                  placeholder: "Cth: John@example.com",
+                  value: formData.email,
+                  onChange: (e) => handleTextInputChange("email", e),
+                }}
+              />
             </Label>
             <Label
               labelType="form-control"
@@ -135,7 +146,16 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                 formState.errors?.password as string
               )}
             >
-              <Input attributes={inputIdentityNumber} />
+              <Input
+                attributes={{
+                  type: "password",
+                  name: "password",
+                  className: "input input-bordered w-full",
+                  placeholder: "Masukan NIP",
+                  value: formData.password,
+                  onChange: (e) => handleTextInputChange("password", e),
+                }}
+              />
             </Label>
             <Label
               labelType="form-control"
@@ -144,7 +164,16 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                 formState.errors?.position as string
               )}
             >
-              <Input attributes={inputPosition} />
+              <Input
+                attributes={{
+                  type: "text",
+                  name: "position",
+                  className: "input input-bordered w-full",
+                  placeholder: "Cth: Manager",
+                  value: formData.position,
+                  onChange: (e) => handleTextInputChange("position", e),
+                }}
+              />
             </Label>
             <Label
               labelType="form-control"
@@ -153,16 +182,43 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                 formState.errors?.phone as string
               )}
             >
-              <Input attributes={inputPhoneNumber} />
+              <Input
+                attributes={{
+                  type: "text",
+                  name: "phone",
+                  className: "input input-bordered w-full",
+                  placeholder: "Cth: 08xxxxxxx",
+                  value: formData.phone,
+                  onChange: (e) => handleTextInputChange("phone", e),
+                }}
+              />
             </Label>
             <div>
               <p>Jenis Kelamin</p>
               <div className="grid grid-cols-2 gap-2">
                 <RadioButton label="Laki-laki">
-                  <Input attributes={genderManAttr} />
+                  <Input
+                    attributes={{
+                      type: "radio",
+                      name: "gender",
+                      className: "radio radio-primary",
+                      value: "male",
+                      checked: formData.gender === "male",
+                      onChange: handleGenderChange,
+                    }}
+                  />
                 </RadioButton>
                 <RadioButton label="Perempuan">
-                  <Input attributes={genderWomenAttr} />
+                  <Input
+                    attributes={{
+                      type: "radio",
+                      name: "gender",
+                      className: "radio radio-primary",
+                      value: "female",
+                      checked: formData.gender === "female",
+                      onChange: handleGenderChange,
+                    }}
+                  />
                 </RadioButton>
               </div>
             </div>
@@ -174,12 +230,22 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
             <div className="grid grid-cols-2 gap-2">
               <Label
                 labelType="form-control"
-                leftLabel="Plih Jenjang Pendidikan"
+                leftLabel="Pilih Jenjang Pendidikan"
                 bottomLeftLabel={ErrorMessageRendered(
                   formState.errors?.education as string
                 )}
               >
-                <Select attr={selectAttr} disableOptionLabel="Pilih satu">
+                <Select
+                  attr={{
+                    name: "education",
+                    className: "select select-bordered",
+                    value: formData.education,
+                    onChange: handleSelectChange,
+                  }}
+                >
+                  <option disabled value="">
+                    Pilih Satu
+                  </option>
                   <option value="s1">S1</option>
                   <option value="s2">S2</option>
                 </Select>
@@ -191,7 +257,15 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                   formState.errors?.age as string
                 )}
               >
-                <Input attributes={ageAttr} />
+                <Input
+                  attributes={{
+                    type: "date",
+                    name: "age",
+                    className: "input input-bordered w-full",
+                    value: formData.age,
+                    onChange: (e) => handleTextInputChange("age", e),
+                  }}
+                />
               </Label>
               <Label
                 labelType="form-control"
@@ -200,16 +274,33 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                   formState.errors?.experience as string
                 )}
               >
-                <Input attributes={experienceAttr} />
+                <Input
+                  attributes={{
+                    type: "date",
+                    name: "experience",
+                    className: "input input-bordered w-full",
+                    value: formData.experience,
+                    onChange: (e) => handleTextInputChange("experience", e),
+                  }}
+                />
               </Label>
               <Label
                 labelType="form-control"
-                leftLabel="Jiwa kepemimpinan"
+                leftLabel="Jiwa Kepemimpinan"
                 bottomLeftLabel={ErrorMessageRendered(
                   formState.errors?.leadership as string
                 )}
               >
-                <Input attributes={leaderAttr} />
+                <Input
+                  attributes={{
+                    type: "text",
+                    name: "leadership",
+                    className: "input input-bordered w-full",
+                    min: 0,
+                    value: formData.leadership,
+                    onChange: (e) => handleTextInputChange("leadership", e),
+                  }}
+                />
               </Label>
             </div>
           </div>

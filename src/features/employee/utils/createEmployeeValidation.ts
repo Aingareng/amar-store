@@ -9,11 +9,11 @@ export function validateEmployeeData(data: IEmployeePayload) {
   const errors: Record<string, string> = {};
 
   // Validasi username
-  if (!data.username.trim()) {
-    errors.username = "Username tidak boleh kosong.";
-  } else if (data.username.length < 3) {
-    errors.username = "Username minimal terdiri dari 3 karakter.";
-  }
+  // if (!data.username.trim()) {
+  //   errors.username = "Username tidak boleh kosong.";
+  // } else if (data.username.length < 3) {
+  //   errors.username = "Username minimal terdiri dari 3 karakter.";
+  // }
 
   // Validasi email
   if (!data.email.trim()) {

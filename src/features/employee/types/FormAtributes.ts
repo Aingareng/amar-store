@@ -86,5 +86,19 @@ const createEmployeeAttributes = {
   submitAttr,
   inputUsernameAttr,
 };
+export const detailEmployeeAttributes = {
+  ageAttr,
+  experienceAttr,
+  formAttr,
+  genderManAttr,
+  genderWomenAttr,
+  inputEmailAttr,
+  inputIdentityNumber,
+  inputPhoneNumber,
+  inputPosition,
+  leaderAttr,
+  selectAttr,
+  submitAttr,
+};
 
 export default createEmployeeAttributes;

@@ -16,6 +16,7 @@ export default function useEmployees(params?: IEmployeeQueryParams) {
     isLoading,
     isPending,
     isFetched,
+    isFetching,
   } = useQuery({
     initialData: [],
     queryKey: ["employees", params],
@@ -53,6 +54,7 @@ export default function useEmployees(params?: IEmployeeQueryParams) {
     isLoading,
     isPending,
     isFetched,
+    isFetching,
     createEmployee: createMutation.mutateAsync,
     editEmployee: editMutation.mutateAsync,
     deleteEmployee: destroyMutaion.mutateAsync,

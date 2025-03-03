@@ -100,6 +100,10 @@ export class ApiClient {
       ? "?" + new URLSearchParams(params).toString()
       : "";
 
+    // console.log("🚀 ~ ApiClient ~ queryString:", queryString);
+    // console.log("🚀 ~ ApiClient ~ data:", data);
+    // console.log("🚀 ~ ApiClient ~ option:", option);
+
     return await this.request<ResponseType>(`${endpoint}${queryString}`, {
       ...option,
       method: "PUT",

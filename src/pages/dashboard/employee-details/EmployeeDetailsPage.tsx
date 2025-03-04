@@ -9,10 +9,12 @@ import Select from "../../../shared/components/atoms/Select";
 import Button from "../../../shared/components/atoms/Button";
 import useEmployees from "../../../features/employee/hooks/useEmployee";
 import { ChangeEvent, useActionState, useEffect, useState } from "react";
-import { validateEmployeeData } from "../../../features/employee/utils/createEmployeeValidation";
+import { validateEmployeeData } from "../../../features/employee/utils/editEmployeeValidation";
 import Toast from "../../../shared/components/molecules/Toast";
 import Alert from "../../../shared/components/atoms/Alert";
 import getInitials from "../../../shared/utils/initialString";
+import { calculateExperience } from "../../../shared/utils/calculateExperience";
+import { calculateAge } from "../../../shared/utils/calculateAge";
 
 export default function EmployeeDetails() {
   const {
@@ -28,6 +30,7 @@ export default function EmployeeDetails() {
     leaderAttr,
     selectAttr,
     submitAttr,
+    inputSkillAttr,
   } = detailEmployeeAttributes;
   const { slug } = useParams<{ slug: string }>();
   const [toastStatus, setToastStatus] = useState(false);
@@ -35,15 +38,16 @@ export default function EmployeeDetails() {
     id: slug,
   });
   const [initialValue, setInitialValue] = useState({
-    age: new Date(),
+    age: "",
     education: "",
     email: "",
-    experience: new Date(),
+    experience: "",
     gender: "",
     leadership: "",
     password: "",
     phone: "",
     position: "",
+    skill: "",
   });
 
   const employee = employees[0] || initialValue;
@@ -53,8 +57,8 @@ export default function EmployeeDetails() {
       setInitialValue((prevState) => {
         const updatedEmployee = {
           ...prevState,
-          age: new Date(employee.age),
-          experience: new Date(employee.experience),
+          age: employee.age.toString(),
+          experience: employee.experience.toString(),
           gender: employee.isMale ? "male" : "female",
           email: employee.email,
           education: employee.education,
@@ -62,6 +66,7 @@ export default function EmployeeDetails() {
           password: employee.password,
           phone: employee.phone,
           position: employee.position,
+          skill: employee.skill,
         };
 
         return updatedEmployee;
@@ -73,6 +78,10 @@ export default function EmployeeDetails() {
   inputEmailAttr.onChange = (event: ChangeEvent<HTMLInputElement>) =>
     handleTextInputChange("email", event);
 
+  inputSkillAttr.value = initialValue.skill;
+  inputSkillAttr.onChange = (event: ChangeEvent<HTMLInputElement>) =>
+    handleTextInputChange("skill", event);
+
   inputPhoneNumber.value = initialValue.phone;
   inputPhoneNumber.onChange = (e) => handleTextInputChange("phone", e);
 
@@ -82,12 +91,12 @@ export default function EmployeeDetails() {
   inputPosition.value = initialValue.position;
   inputPosition.onChange = (e) => handleTextInputChange("position", e);
 
-  ageAttr.value = initialValue.age.toISOString().split("T")[0];
+  ageAttr.value = initialValue.age;
   // String(initialValue.age);
 
   ageAttr.onChange = (e) => handleTextInputChange("age", e);
 
-  experienceAttr.value = initialValue.experience.toISOString().split("T")[0];
+  experienceAttr.value = initialValue.experience;
   // toISOString().split("T")[0];
   experienceAttr.onChange = (e) => handleTextInputChange("experience", e);
 
@@ -112,14 +121,7 @@ export default function EmployeeDetails() {
     identifier: string,
     event: ChangeEvent<HTMLInputElement>
   ) {
-    // if (identifier === "age") {
-    //   console.log(typeof event.target.value);
-    // }
-
-    const value =
-      identifier === "age" || identifier === "experience"
-        ? new Date(event.target.value)
-        : event.target.value;
+    const value = event.target.value;
 
     setInitialValue((prevState) => {
       return {
@@ -154,6 +156,9 @@ export default function EmployeeDetails() {
       age: String(initialValue.age),
       experience: String(initialValue.experience),
       gender: initialValue.gender as "male" | "female",
+      education: String(initialValue.education),
+      leadership: String(initialValue.leadership),
+      skill: String(initialValue.skill),
     };
     const validationErrors = validateEmployeeData(data);
 
@@ -163,13 +168,18 @@ export default function EmployeeDetails() {
         enteredValue: initialValue,
       };
     }
+
+    console.log(String(calculateAge(String(initialValue.age))));
     const payload = {
       id: slug as string,
       employeeData: {
         ...initialValue,
-        age: initialValue.age.toISOString().split("T")[0],
-        experience: initialValue.experience.toISOString().split("T")[0],
+        experience: initialValue.experience,
+        age: initialValue.age,
         gender: initialValue.gender as "male" | "female",
+        education: String(initialValue.education),
+        leadership: String(initialValue.leadership),
+        skill: String(initialValue.skill),
       },
     };
     const response = await editEmployee(payload);
@@ -286,8 +296,6 @@ export default function EmployeeDetails() {
                     </RadioButton>
                   </div>
                 </div>
-                {/* {isFetched && (
-                )} */}
               </main>
 
               {/* Keahlian */}
@@ -298,7 +306,16 @@ export default function EmployeeDetails() {
                 <div className="grid grid-cols-2 gap-2">
                   <Label
                     labelType="form-control"
-                    leftLabel="Plih Jenjang Pendidikan"
+                    leftLabel="Keahlian"
+                    bottomLeftLabel={ErrorMessageRendered(
+                      formState.errors?.skill as string
+                    )}
+                  >
+                    <Input attributes={inputSkillAttr} />
+                  </Label>
+                  <Label
+                    labelType="form-control"
+                    leftLabel="Pilih Jenjang Pendidikan"
                     bottomLeftLabel={ErrorMessageRendered(
                       formState.errors?.education as string
                     )}
@@ -307,8 +324,9 @@ export default function EmployeeDetails() {
                       <option value="" disabled>
                         Pilih Satu
                       </option>
-                      <option value="s1">S1</option>
-                      <option value="s2">S2</option>
+                      <option value="3">D3</option>
+                      <option value="4">S1</option>
+                      <option value="5">S2</option>
                     </Select>
                   </Label>
                   <Label

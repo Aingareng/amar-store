@@ -45,6 +45,9 @@ export default function useEmployees(params?: IEmployeeQueryParams) {
   const editMutation = useMutation({
     mutationFn: ({ id, employeeData }: payloadEditType) =>
       editEmployee({ id }, employeeData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+    },
   });
 
   return {

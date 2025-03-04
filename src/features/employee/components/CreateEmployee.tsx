@@ -10,6 +10,8 @@ import createEmployeeAttributes from "../types/FormAtributes";
 import useEmployees from "../hooks/useEmployee";
 import { validateEmployeeData } from "../utils/createEmployeeValidation";
 import { IEmployeePayload } from "../types/employees";
+import { calculateAge } from "../../../shared/utils/calculateAge";
+import { calculateExperience } from "../../../shared/utils/calculateExperience";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
@@ -31,6 +33,7 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
     leadership: "",
     age: "",
     education: "",
+    skill: "",
   });
 
   // Handler untuk input text
@@ -38,9 +41,10 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
     field: keyof IEmployeePayload,
     event: ChangeEvent<HTMLInputElement>
   ) {
+    const { value } = event.target;
     setFormData((prev) => ({
       ...prev,
-      [field]: event.target.value,
+      [field]: value,
     }));
   }
 
@@ -70,7 +74,12 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
       };
     }
 
-    const response = await createEmployee(formData);
+    const payload: IEmployeePayload = {
+      ...formData,
+      experience: String(calculateExperience(formData.experience)),
+      age: String(calculateAge(formData.age)),
+    };
+    const response = await createEmployee(payload);
 
     if (response.status !== 400 && response.status !== 500) {
       onShowToast(true);
@@ -92,6 +101,22 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
         <span className="label-text-alt text-error">{message}</span>
       </div>
     );
+  }
+
+  function handleResetForm() {
+    setFormData({
+      age: "",
+      education: "",
+      email: "",
+      experience: "",
+      gender: "male",
+      leadership: "",
+      password: "",
+      phone: "",
+      position: "",
+      username: "",
+      skill: "",
+    });
   }
 
   const { formAttr, submitAttr } = createEmployeeAttributes;
@@ -224,10 +249,29 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
             </div>
           </main>
 
-          {/* Keahlian */}
+          {/* Kriteria */}
           <div className="flex w-full flex-col">
-            <div className="divider divider-start">Keahlian</div>
+            <div className="divider divider-start">Kriteria</div>
             <div className="grid grid-cols-2 gap-2">
+              <Label
+                labelType="form-control"
+                leftLabel="Keahlian"
+                bottomLeftLabel={ErrorMessageRendered(
+                  formState.errors?.skill as string
+                )}
+              >
+                <Input
+                  attributes={{
+                    type: "number",
+                    name: "skill",
+                    className: "input input-bordered w-full",
+                    value: formData.skill,
+                    placeholder: "Cth : 10",
+                    onChange: (e) => handleTextInputChange("skill", e),
+                  }}
+                />
+              </Label>
+
               <Label
                 labelType="form-control"
                 leftLabel="Pilih Jenjang Pendidikan"
@@ -246,8 +290,9 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                   <option disabled value="">
                     Pilih Satu
                   </option>
-                  <option value="s1">S1</option>
-                  <option value="s2">S2</option>
+                  <option value={3}>D3</option>
+                  <option value={4}>S1</option>
+                  <option value={5}>S2</option>
                 </Select>
               </Label>
               <Label
@@ -293,11 +338,12 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
               >
                 <Input
                   attributes={{
-                    type: "text",
+                    type: "number",
                     name: "leadership",
                     className: "input input-bordered w-full",
                     min: 0,
                     value: formData.leadership,
+                    placeholder: "Cth : 10",
                     onChange: (e) => handleTextInputChange("leadership", e),
                   }}
                 />
@@ -307,7 +353,13 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
 
           {/* Action */}
           <footer className="flex justify-end gap-2 mt-3">
-            <Button attributes={{ className: "btn btn-outline btn-error" }}>
+            <Button
+              attributes={{
+                className: "btn btn-outline btn-error",
+                type: "reset",
+                onClick: handleResetForm,
+              }}
+            >
               Batal
             </Button>
             <Button attributes={submitAttr}>Tambah</Button>

@@ -54,20 +54,28 @@ const selectAttr: React.SelectHTMLAttributes<HTMLSelectElement> = {
   className: "select select-bordered",
 };
 const ageAttr: React.InputHTMLAttributes<HTMLInputElement> = {
-  type: "date",
+  type: "number",
   name: "age",
   className: "input input-bordered w-full",
 };
 
 const experienceAttr: React.InputHTMLAttributes<HTMLInputElement> = {
-  type: "date",
+  type: "number",
   name: "experience",
   className: "input input-bordered w-full",
 };
 const leaderAttr: React.InputHTMLAttributes<HTMLInputElement> = {
-  type: "text",
+  type: "number",
   name: "leadership",
   className: "input input-bordered w-full",
+  min: 0,
+};
+
+const inputSkillAttr: React.InputHTMLAttributes<HTMLInputElement> = {
+  type: "number",
+  name: "username",
+  className: "input input-bordered w-full",
+  placeholder: "Masukan Nama Lengkap",
   min: 0,
 };
 
@@ -99,6 +107,7 @@ export const detailEmployeeAttributes = {
   leaderAttr,
   selectAttr,
   submitAttr,
+  inputSkillAttr,
 };
 
 export default createEmployeeAttributes;

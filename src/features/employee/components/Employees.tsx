@@ -35,7 +35,6 @@ export default function Employees() {
       <th>Nama</th>
       <th>Jabatan</th>
       <th>Nilai Skor</th>
-      <th>Peringkat</th>
       <th>Aksi</th>
     </tr>
   );
@@ -71,7 +70,6 @@ export default function Employees() {
             </td>
             <td>{item.position}</td>
             <td>{item.final_score}</td>
-            <td>{item.rangking}</td>
 
             <th>
               <Dropdown itemIndex={item.id} onAction={handleDestroyEmployee} />

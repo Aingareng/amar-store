@@ -25,6 +25,7 @@ export interface Employees {
   final_score: number;
   rangking: number;
   position: string;
+  skill: string;
 }
 
 export interface EmployeeDetail {
@@ -52,4 +53,5 @@ export interface IEmployeePayload {
   experience: string;
   leadership: string;
   position: string;
+  skill: string;
 }

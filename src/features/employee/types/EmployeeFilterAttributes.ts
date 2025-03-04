@@ -7,7 +7,7 @@ import {
 const searchAttr: InputHTMLAttributes<HTMLInputElement> = {
   type: "text",
   name: "search-employee",
-  placeholder: "Cth : Nama,NIP,Skor",
+  placeholder: "Cth : Nama,email,No.Hp,Posisi",
   className: "input input-bordered w-full max-w-xs",
 };
 const buttAttr: ButtonHTMLAttributes<HTMLButtonElement> = {

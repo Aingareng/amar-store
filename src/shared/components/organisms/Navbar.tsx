@@ -87,7 +87,7 @@ export default function Navbar() {
       <div className="navbar-end">
         <div className="avatar placeholder">
           <div className="bg-primary text-neutral-content w-12 rounded-full">
-            <span className="text-xl">{getInitials("Toko Amar")}</span>
+            <span className="text-xl">{getInitials("Admin")}</span>
           </div>
         </div>
       </div>

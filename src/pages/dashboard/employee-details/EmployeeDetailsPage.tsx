@@ -169,7 +169,6 @@ export default function EmployeeDetails() {
       };
     }
 
-    console.log(String(calculateAge(String(initialValue.age))));
     const payload = {
       id: slug as string,
       employeeData: {
@@ -361,9 +360,6 @@ export default function EmployeeDetails() {
 
               {/* Action */}
               <footer className="flex justify-end gap-2 mt-3">
-                <Button attributes={{ className: "btn btn-outline btn-error" }}>
-                  Batal
-                </Button>
                 <Button attributes={submitAttr}>Simpan</Button>
               </footer>
             </Form>

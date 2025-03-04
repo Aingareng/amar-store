@@ -1,7 +1,7 @@
 export interface ICriteriaData {
   id: number;
   name: string;
-  point: number;
+  rank_order: number;
 }
 export interface ICriteriaPayload {
   id: number;

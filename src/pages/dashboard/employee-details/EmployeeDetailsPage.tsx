@@ -13,8 +13,6 @@ import { validateEmployeeData } from "../../../features/employee/utils/editEmplo
 import Toast from "../../../shared/components/molecules/Toast";
 import Alert from "../../../shared/components/atoms/Alert";
 import getInitials from "../../../shared/utils/initialString";
-import { calculateExperience } from "../../../shared/utils/calculateExperience";
-import { calculateAge } from "../../../shared/utils/calculateAge";
 
 export default function EmployeeDetails() {
   const {
@@ -103,7 +101,7 @@ export default function EmployeeDetails() {
   leaderAttr.value = initialValue.leadership;
   leaderAttr.onChange = (e) => handleTextInputChange("leadership", e);
 
-  selectAttr.value = initialValue.email;
+  selectAttr.value = initialValue.education;
   selectAttr.onChange = (event: ChangeEvent<HTMLSelectElement>) =>
     handleSelectChange("education", event);
 
@@ -323,6 +321,7 @@ export default function EmployeeDetails() {
                       <option value="" disabled>
                         Pilih Satu
                       </option>
+                      <option value="2">SMA/SMK</option>
                       <option value="3">D3</option>
                       <option value="4">S1</option>
                       <option value="5">S2</option>

@@ -1,4 +1,10 @@
-import { ForwardedRef, useState, ChangeEvent, useActionState } from "react";
+import {
+  ForwardedRef,
+  useState,
+  ChangeEvent,
+  useActionState,
+  useCallback,
+} from "react";
 import Modal from "../../../shared/components/organisms/Modal";
 import Form from "../../../shared/components/molecules/Form";
 import Label from "../../../shared/components/atoms/Label";
@@ -12,6 +18,7 @@ import { validateEmployeeData } from "../utils/createEmployeeValidation";
 import { IEmployeePayload } from "../types/employees";
 import { calculateAge } from "../../../shared/utils/calculateAge";
 import { calculateExperience } from "../../../shared/utils/calculateExperience";
+import SkillsInputSection from "./SkillsInputSection";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
@@ -64,7 +71,14 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
     }));
   }
 
-  async function handleAddEmployee(prevState: unknown, _: FormData) {
+  const handleSkillSelected = useCallback((count: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      skill: String(count * 10),
+    }));
+  }, []);
+
+  async function handleAddEmployee() {
     const validationErrors = validateEmployeeData(formData);
 
     if (Object.keys(validationErrors.errors).length > 0) {
@@ -79,9 +93,11 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
       experience: String(calculateExperience(formData.experience)),
       age: String(calculateAge(formData.age)),
     };
+
     const response = await createEmployee(payload);
 
     if (response.status !== 400 && response.status !== 500) {
+      handleResetForm();
       onShowToast(true);
       setTimeout(() => {
         onShowToast(false);
@@ -255,25 +271,6 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
             <div className="grid grid-cols-2 gap-2">
               <Label
                 labelType="form-control"
-                leftLabel="Keahlian"
-                bottomLeftLabel={ErrorMessageRendered(
-                  formState.errors?.skill as string
-                )}
-              >
-                <Input
-                  attributes={{
-                    type: "number",
-                    name: "skill",
-                    className: "input input-bordered w-full",
-                    value: formData.skill,
-                    placeholder: "Cth : 10",
-                    onChange: (e) => handleTextInputChange("skill", e),
-                  }}
-                />
-              </Label>
-
-              <Label
-                labelType="form-control"
                 leftLabel="Pilih Jenjang Pendidikan"
                 bottomLeftLabel={ErrorMessageRendered(
                   formState.errors?.education as string
@@ -290,6 +287,7 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                   <option disabled value="">
                     Pilih Satu
                   </option>
+                  <option value={2}>SMA/SMK</option>
                   <option value={3}>D3</option>
                   <option value={4}>S1</option>
                   <option value={5}>S2</option>
@@ -348,6 +346,7 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                   }}
                 />
               </Label>
+              <SkillsInputSection onSkillCountChange={handleSkillSelected} />
             </div>
           </div>
 

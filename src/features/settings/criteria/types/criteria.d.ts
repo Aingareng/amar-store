@@ -14,7 +14,7 @@ export interface ICriteriaPayload {
 export interface ICriteriaResponse {
   status: number;
   message: string;
-  data: ICriteriaData[];
+  data: ICriteriaData[] | null;
 }
 export interface ICriteriaDatas {
   id?: number;

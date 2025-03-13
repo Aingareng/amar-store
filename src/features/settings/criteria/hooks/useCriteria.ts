@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getCriteria, updateCriteria } from "../api/criteria";
+import {
+  createCriteria,
+  deleteCriteria,
+  getCriteria,
+  updateCriteria,
+} from "../api/criteria";
 import { ICriteriaData } from "../types/criteria";
 
 export default function useCriteria() {
@@ -17,16 +22,27 @@ export default function useCriteria() {
   });
 
   type updateMutationType = {
-    data: ICriteriaData[];
+    id: number;
+    payload: ICriteriaData[];
   };
 
   const updateMutation = useMutation({
-    mutationFn: ({ data }: updateMutationType) => {
-      return updateCriteria(data);
+    mutationFn: ({ id, payload }: updateMutationType) => {
+      return updateCriteria(id, payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["criteria"] });
     },
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (payload: ICriteriaData) => createCriteria(payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["criteria"] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteCriteria(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["criteria"] }),
   });
 
   return {
@@ -36,5 +52,7 @@ export default function useCriteria() {
     isFetched,
     isLoading,
     updateCriteria: updateMutation.mutateAsync,
+    createCriteria: createMutation.mutateAsync,
+    deleteCriteria: deleteMutation.mutateAsync,
   };
 }

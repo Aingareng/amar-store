@@ -1,209 +1,135 @@
-import Form from "../../../../shared/components/molecules/Form";
-import createEmployeeAttributes from "../../../../features/employee/types/FormAtributes";
-import Label from "../../../../shared/components/atoms/Label";
-import Input from "../../../../shared/components/atoms/Input";
-import criteriaPageAttributes from "../../../../features/settings/criteria/types/criteriaPageAttributes";
+import { Icon } from "@iconify/react/dist/iconify.js";
+
+import { ICriteriaDatas } from "../../../../features/settings/criteria/types/criteria";
 import Button from "../../../../shared/components/atoms/Button";
-import { ChangeEvent, useActionState, useEffect, useState } from "react";
-// import { FormState } from '../../../../types/formState';
-import { ICriteriaData } from "../../../../features/settings/criteria/types/criteria";
-import useCriteria from "../../../../features/settings/criteria/hooks/useCriteria";
-import Toast from "../../../../shared/components/molecules/Toast";
-import Alert from "../../../../shared/components/atoms/Alert";
-import validateFormInput from "../../../../features/settings/criteria/utils/validateFormInput";
+import CriteriaTable from "../../../../features/settings/criteria/components/CriteriaTable";
+import { useCallback, useRef, useState } from "react";
+import Modal from "../../../../shared/components/organisms/Modal";
+import InsertUpdateCriteria from "../../../../features/settings/criteria/components/InsertUpdateCriteria";
 
 export default function CriteriaPage() {
-  const { formAttr, submitAttr } = createEmployeeAttributes;
-  formAttr.className =
-    "grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl shadow";
-  const {
-    inputAgeAttr,
-    inputEducationAtrr,
-    inputExperienceAttr,
-    inputLeaderAttr,
-    inputSkillAttr,
-  } = criteriaPageAttributes;
+  const destroyDialogRef = useRef<HTMLDialogElement>(null);
+  const insertEditDialogRef = useRef<HTMLDialogElement>(null);
+  const [itemId, setItemId] = useState<number>();
+  const [insertUpdateDialog, setInserUpdateDialog] = useState<
+    "UPDATE" | "CREATE"
+  >();
 
-  const { criterias, isFetched, updateCriteria } = useCriteria();
-  const [toastStatus, setToastStatus] = useState(false);
-  const [rankOrder, setRankOrder] = useState({
-    skill: 1,
-    education: 2,
-    experience: 3,
-    age: 4,
-    leader: 5,
-  });
+  const criteriaDatas: ICriteriaDatas[] = [
+    {
+      id: 1,
+      criteria_code: "CR001",
+      criteria_name: "Quality",
+      criteria_bobot: 0.3,
+      criteria_type: "Benefit",
+      criteria_priority: 1,
+    },
+    {
+      id: 2,
+      criteria_code: "CR002",
+      criteria_name: "Cost",
+      criteria_bobot: 0.25,
+      criteria_type: "Cost",
+      criteria_priority: 2,
+    },
+    {
+      id: 3,
+      criteria_code: "CR003",
+      criteria_name: "Delivery Time",
+      criteria_bobot: 0.2,
+      criteria_type: "Benefit",
+      criteria_priority: 3,
+    },
+    {
+      id: 4,
+      criteria_code: "CR004",
+      criteria_name: "Customer Service",
+      criteria_bobot: 0.15,
+      criteria_type: "Benefit",
+      criteria_priority: 4,
+    },
+    {
+      id: 5,
+      criteria_code: "CR005",
+      criteria_name: "Reputation",
+      criteria_bobot: 0.1,
+      criteria_type: "Benefit",
+      criteria_priority: 5,
+    },
+  ];
 
-  useEffect(() => {
-    if (isFetched && criterias.length > 0) {
-      setRankOrder((prev) => {
-        return {
-          ...prev,
-          skill: criterias[0].rank_order || 0,
-          education: criterias[1].rank_order || 0,
-          experience: criterias[2].rank_order || 0,
-          age: criterias[3].rank_order || 0,
-          leader: criterias[4].rank_order || 0,
-        };
-      });
-    }
-  }, [criterias, isFetched]);
+  const handleTableAction = useCallback(
+    (id: number, type: "EDIT" | "DESTROY") => {
+      setItemId(id);
 
-  async function handleSubmitCriteria(prevState: unknown, formData: FormData) {
-    const skill = Number(formData.get("skill-score")) || 0;
-    const education = Number(formData.get("education-score")) || 0;
-    const experience = Number(formData.get("experience-score")) || 0;
-    const age = Number(formData.get("age-score")) || 0;
-    const leadership = Number(formData.get("leader-score")) || 0;
-    const rankOrder = { skill, education, experience, age, leadership };
+      if (type === "EDIT" && id) {
+        insertEditDialogRef.current?.showModal();
+        setInserUpdateDialog("UPDATE");
+      }
+      if (type === "DESTROY" && id) {
+        destroyDialogRef.current?.showModal();
+      }
+    },
+    []
+  );
 
-    const validationResult = validateFormInput(rankOrder);
-
-    if (!validationResult.isValid) {
-      return {
-        error: validationResult.errors,
-        enteredValue: formData,
-      };
-    }
-
-    const payload: ICriteriaData[] = [
-      {
-        id: criterias[0].id,
-        name: criterias[0].name,
-        rank_order: skill,
-      },
-      {
-        id: criterias[1].id,
-        name: criterias[1].name,
-        rank_order: education,
-      },
-      {
-        id: criterias[2].id,
-        name: criterias[2].name,
-        rank_order: experience,
-      },
-      {
-        id: criterias[3].id,
-        name: criterias[3].name,
-        rank_order: age,
-      },
-      {
-        id: criterias[4].id,
-        name: criterias[4].name,
-        rank_order: leadership,
-      },
-    ];
-
-    const response = await updateCriteria({ data: payload });
-    if (response.status != 400 && response.status != 500) {
-      setToastStatus(true);
-
-      setTimeout(() => {
-        setToastStatus(false);
-      }, 2000);
-    }
-    return {
-      enteredValue: {
-        skill,
-        education,
-        experience,
-        age,
-        leadership,
-      },
-    };
+  function handleDestroyCriteria(id: number) {
+    console.log(id);
   }
-  function handleChangeEnteredValue(
-    identifer: string,
-    event: ChangeEvent<HTMLInputElement>
-  ) {
-    setRankOrder((prev) => {
-      return {
-        ...prev,
-        [identifer]: event.target.value,
-      };
-    });
+  function handleAddCriteria() {
+    setInserUpdateDialog("CREATE");
+    insertEditDialogRef.current?.showModal();
   }
-
-  const [formState, formAction] = useActionState(handleSubmitCriteria, null);
-  formAttr.action = formAction;
-
-  inputAgeAttr.value = rankOrder.age;
-  inputAgeAttr.onChange = (e) => handleChangeEnteredValue("age", e);
-
-  inputEducationAtrr.value = rankOrder.education;
-  inputEducationAtrr.onChange = (e) => handleChangeEnteredValue("education", e);
-
-  inputExperienceAttr.value = rankOrder.experience;
-  inputExperienceAttr.onChange = (e) =>
-    handleChangeEnteredValue("experience", e);
-
-  inputSkillAttr.value = rankOrder.skill;
-  inputSkillAttr.onChange = (e) => handleChangeEnteredValue("skill", e);
-
-  inputLeaderAttr.value = rankOrder.leader;
-  inputLeaderAttr.onChange = (e) => handleChangeEnteredValue("leader", e);
 
   return (
-    <>
-      <section className="grid grid-cols-1 gap-5">
-        {toastStatus && (
-          <Toast>
-            <Alert>
-              <span>Berhasil mengubah Kriteria</span>
-            </Alert>
-          </Toast>
-        )}
+    <div className="grid grid-cols-1 gap-5">
+      <header className=" flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Daftar Kriteria</h1>
+        <Button
+          attributes={{
+            className: "btn btn-primary",
+            onClick: handleAddCriteria,
+          }}
+        >
+          <Icon icon="material-symbols:add-2-rounded" width="24" height="24" />
+          Tambah Kriteria
+        </Button>
+      </header>
+      <main className="bg-base-100">
+        <CriteriaTable
+          criteriaData={criteriaDatas}
+          tableAction={handleTableAction}
+        />
+      </main>
+      {/* Modal section */}
+      <InsertUpdateCriteria
+        modalType={insertUpdateDialog as "UPDATE" | "CREATE"}
+        ref={insertEditDialogRef}
+      />
 
-        <header className=" flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Pegaturan Peringkat Kriteria</h1>
-        </header>
-
-        <Form attributes={formAttr}>
-          <main className="grid grid-cols-2 gap-2">
-            <Label labelType="form-control" leftLabel="Peringkat Keahlian">
-              <Input attributes={inputSkillAttr} />
-            </Label>
-
-            <Label
-              labelType="form-control"
-              leftLabel="Peringkat Jenjang Pendidikan"
+      <Modal ref={destroyDialogRef}>
+        <section className="flex flex-col justify-center items-center gap-5">
+          <h1 className="text-2xl font-semibold">Yakin ingin dihapus ?</h1>
+          <div className="flex gap-2">
+            <Button
+              attributes={{
+                className: "btn btn-outline btn-error",
+                onClick: () => destroyDialogRef.current?.close(),
+              }}
             >
-              <Input attributes={inputEducationAtrr} />
-            </Label>
-
-            <Label
-              labelType="form-control"
-              leftLabel="Peringkat Pengalaman Kerja"
+              Batal
+            </Button>
+            <Button
+              attributes={{
+                className: "btn btn-primary",
+                onClick: () => handleDestroyCriteria(itemId as number),
+              }}
             >
-              <Input attributes={inputExperienceAttr} />
-            </Label>
-
-            <Label labelType="form-control" leftLabel="Peringkat Umur">
-              <Input attributes={inputAgeAttr} />
-            </Label>
-
-            <Label labelType="form-control" leftLabel="Peringkat Kepemimpinan">
-              <Input attributes={inputLeaderAttr} />
-            </Label>
-          </main>
-
-          {formState && formState.error && (
-            <div>
-              <div className="label grid-cols-1 grid gap-1">
-                {formState.error.map((message) => (
-                  <span key={message} className="label-text-alt text-error">
-                    {message}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <footer className="flex justify-end gap-2 mt-3">
-            <Button attributes={submitAttr}>Simpan</Button>
-          </footer>
-        </Form>
-      </section>
-    </>
+              Hapus
+            </Button>
+          </div>
+        </section>
+      </Modal>
+    </div>
   );
 }

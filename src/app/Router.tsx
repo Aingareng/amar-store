@@ -2,8 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "../pages/auth/login/LoginPage";
 import Home from "../pages/dashboard/page";
 import EmployeeDetails from "../pages/dashboard/employee-details/EmployeeDetailsPage";
-import CriteriaPage from "../pages/dashboard/settings/criteria/CriteriaPage";
 import DashboardLayout from "../pages/dashboard/layout";
+import CriteriaPage from "../pages/dashboard/settings/criteria/CriteriaPage";
 
 export default function Router() {
   return (

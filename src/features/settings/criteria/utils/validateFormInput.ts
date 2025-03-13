@@ -1,33 +1,33 @@
-function validateFormInput(rankOrder: Record<string, number>) {
-  const values = Object.values(rankOrder);
-  const uniqueValues = new Set(values);
-  const errors = [];
+import { ICriteriaDatas } from "../types/criteria";
 
-  // Validasi 1: Tidak boleh kosong atau bernilai kurang dari 1
-  if (values.some((val) => val < 1)) {
-    errors.push("Semua field harus diisi dengan angka minimal 1.");
-  }
+export interface IFormErrors {
+  criteria_code?: string;
+  criteria_name?: string;
+  criteria_type?: string;
+  criteria_priority?: string;
+}
 
-  // Validasi 2: Tidak boleh ada nilai yang sama antar field
-  if (uniqueValues.size !== values.length) {
-    errors.push("Setiap peringkat harus memiliki nilai yang berbeda.");
-  }
+export function validateCriteriaForm(data: ICriteriaDatas) {
+  const errors: IFormErrors = {};
+  const { criteria_code, criteria_name, criteria_priority, criteria_type } =
+    data;
 
-  // Validasi 3: Nilai harus dalam rentang 1 - 5
-  if (values.some((val) => val < 1 || val > 5)) {
-    errors.push("Nilai harus berada dalam rentang 1 sampai 5.");
+  if (!criteria_code?.trim()) {
+    errors.criteria_code = "Nomor kriteria tidak boleh kosong.";
   }
-
-  if (errors.length > 0) {
-    return {
-      isValid: false,
-      errors,
-    };
+  if (!criteria_name?.trim()) {
+    errors.criteria_name = "Nama kriteria tidak boleh kosong";
   }
+  if (!criteria_type?.trim()) {
+    errors.criteria_type = "Jenis kriteria tidak boleh kosong";
+  }
+  if (criteria_priority && (criteria_priority < 1 || criteria_priority > 5)) {
+    errors.criteria_priority = "Nilai harus berada dalam rentang 1 sampai 5.";
+  }
+  const isValid = Object.keys(errors).length === 0;
 
   return {
-    isValid: true,
-    errors: [],
+    isValid,
+    errors,
   };
 }
-export default validateFormInput;

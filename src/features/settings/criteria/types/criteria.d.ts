@@ -16,3 +16,11 @@ export interface ICriteriaResponse {
   message: string;
   data: ICriteriaData[];
 }
+export interface ICriteriaDatas {
+  id?: number;
+  criteria_code?: string;
+  criteria_name?: string;
+  criteria_bobot?: number;
+  criteria_type?: string;
+  criteria_priority?: number;
+}

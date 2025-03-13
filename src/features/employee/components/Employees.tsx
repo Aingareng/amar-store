@@ -8,6 +8,9 @@ import useEmployees from "../hooks/useEmployee";
 import EmployeeFilter from "./EmployeeFilter";
 import Toast from "../../../shared/components/molecules/Toast";
 import Alert from "../../../shared/components/atoms/Alert";
+import List from "../../../shared/components/atoms/List";
+import { Link } from "react-router-dom";
+import Button from "../../../shared/components/atoms/Button";
 
 export default function Employees() {
   const [toastStatus, setToastStatus] = useState(false);
@@ -72,7 +75,20 @@ export default function Employees() {
             <td>{item.final_score}</td>
 
             <th>
-              <Dropdown itemIndex={item.id} onAction={handleDestroyEmployee} />
+              <Dropdown itemIndex={item.id} onAction={handleDestroyEmployee}>
+                <List>
+                  <Link to={`/employee-details/${item.id}`}>Detail</Link>
+                </List>
+                <List>
+                  <Button
+                    attributes={{
+                      onClick: () => handleDestroyEmployee(item.id),
+                    }}
+                  >
+                    Hapus
+                  </Button>
+                </List>
+              </Dropdown>
             </th>
           </tr>
         ))}

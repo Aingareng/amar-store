@@ -1,8 +1,14 @@
 import { api } from "../../../../shared/utils/api";
-import { ICriteriaData, ICriteriaResponse } from "../types/criteria";
+import {
+  ICriteriaData,
+  ICriteriaQueryParams,
+  ICriteriaResponse,
+} from "../types/criteria";
 
-export async function getCriteria() {
-  const response = await api.get<ICriteriaResponse>("/criterias");
+export async function getCriteria(params: ICriteriaQueryParams) {
+  const response = await api.get<ICriteriaResponse>("/criterias", {
+    ...params,
+  });
 
   if (response.status != 200) {
     return [];

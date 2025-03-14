@@ -5,9 +5,9 @@ import {
   getCriteria,
   updateCriteria,
 } from "../api/criteria";
-import { ICriteriaData } from "../types/criteria";
+import { ICriteriaData, ICriteriaQueryParams } from "../types/criteria";
 
-export default function useCriteria() {
+export default function useCriteria(params?: ICriteriaQueryParams) {
   const queryClient = useQueryClient();
   const {
     data: criterias,
@@ -16,8 +16,8 @@ export default function useCriteria() {
     isFetched,
     isLoading,
   } = useQuery({
-    queryKey: ["criteria"],
-    queryFn: getCriteria,
+    queryKey: ["criteria", params],
+    queryFn: () => getCriteria(params as ICriteriaQueryParams),
     initialData: [],
   });
 

@@ -1,7 +1,6 @@
 import { ButtonHTMLAttributes, useRef, useState } from "react";
 import Employees from "../../features/employee/components/Employees";
 import Button from "../../shared/components/atoms/Button";
-import DashboardLayout from "./layout";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import CreateEmployee from "../../features/employee/components/CreateEmployee";
 import Toast from "../../shared/components/molecules/Toast";

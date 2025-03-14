@@ -29,11 +29,11 @@ function CriteriaTable({ criteriaData, tableAction }: IProps) {
         {criteriaData.map((item, index) => (
           <tr key={item.id}>
             <td>{index + 1}</td>
-            <td>{item.criteria_code}</td>
-            <td>{item.criteria_name}</td>
-            <td>{item.criteria_bobot}</td>
-            <td>{item.criteria_type}</td>
-            <td>{item.criteria_priority}</td>
+            <td>{item.code}</td>
+            <td>{item.name}</td>
+            <td>{item.weight}</td>
+            <td>{item.type}</td>
+            <td>{item.rank_order}</td>
             <th>
               <Dropdown>
                 <List>

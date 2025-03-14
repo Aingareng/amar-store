@@ -1,11 +1,11 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-
-import { ICriteriaDatas } from "../../../../features/settings/criteria/types/criteria";
 import Button from "../../../../shared/components/atoms/Button";
 import CriteriaTable from "../../../../features/settings/criteria/components/CriteriaTable";
 import { useCallback, useRef, useState } from "react";
 import Modal from "../../../../shared/components/organisms/Modal";
 import InsertUpdateCriteria from "../../../../features/settings/criteria/components/InsertUpdateCriteria";
+import CriteriaFilter from "../../../../features/settings/criteria/components/CriteriaFilter";
+import useCriteria from "../../../../features/settings/criteria/hooks/useCriteria";
 
 export default function CriteriaPage() {
   const destroyDialogRef = useRef<HTMLDialogElement>(null);
@@ -14,49 +14,11 @@ export default function CriteriaPage() {
   const [insertUpdateDialog, setInserUpdateDialog] = useState<
     "UPDATE" | "CREATE"
   >();
+  const [searchValue, setSearchValue] = useState("");
 
-  const criteriaDatas: ICriteriaDatas[] = [
-    {
-      id: 1,
-      criteria_code: "CR001",
-      criteria_name: "Quality",
-      criteria_bobot: 0.3,
-      criteria_type: "Benefit",
-      criteria_priority: 1,
-    },
-    {
-      id: 2,
-      criteria_code: "CR002",
-      criteria_name: "Cost",
-      criteria_bobot: 0.25,
-      criteria_type: "Cost",
-      criteria_priority: 2,
-    },
-    {
-      id: 3,
-      criteria_code: "CR003",
-      criteria_name: "Delivery Time",
-      criteria_bobot: 0.2,
-      criteria_type: "Benefit",
-      criteria_priority: 3,
-    },
-    {
-      id: 4,
-      criteria_code: "CR004",
-      criteria_name: "Customer Service",
-      criteria_bobot: 0.15,
-      criteria_type: "Benefit",
-      criteria_priority: 4,
-    },
-    {
-      id: 5,
-      criteria_code: "CR005",
-      criteria_name: "Reputation",
-      criteria_bobot: 0.1,
-      criteria_type: "Benefit",
-      criteria_priority: 5,
-    },
-  ];
+  const { criterias } = useCriteria({
+    search: searchValue,
+  });
 
   const handleTableAction = useCallback(
     (id: number, type: "EDIT" | "DESTROY") => {
@@ -80,6 +42,9 @@ export default function CriteriaPage() {
     setInserUpdateDialog("CREATE");
     insertEditDialogRef.current?.showModal();
   }
+  function handleFilterTable(value: string) {
+    setSearchValue(value);
+  }
 
   return (
     <div className="grid grid-cols-1 gap-5">
@@ -95,12 +60,15 @@ export default function CriteriaPage() {
           Tambah Kriteria
         </Button>
       </header>
-      <main className="bg-base-100">
+      <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
+        <CriteriaFilter onSearch={handleFilterTable} />
+
         <CriteriaTable
-          criteriaData={criteriaDatas}
+          criteriaData={criterias}
           tableAction={handleTableAction}
         />
       </main>
+
       {/* Modal section */}
       <InsertUpdateCriteria
         modalType={insertUpdateDialog as "UPDATE" | "CREATE"}

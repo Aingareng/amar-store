@@ -60,7 +60,7 @@ export default function Navbar() {
               >
                 <ul>
                   <List>
-                    <Link to="/setting/criteria">Skor Kriteria</Link>
+                    <Link to="/setting/criteria">Daftar Kriteria</Link>
                   </List>
                 </ul>
               </Submenu>

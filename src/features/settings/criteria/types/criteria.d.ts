@@ -2,7 +2,15 @@ export interface ICriteriaData {
   id: number;
   name: string;
   rank_order: number;
+  weight: number;
+  type: "benefit" | "cost";
+  code: string;
 }
+
+export interface ICriteriaQueryParams {
+  search?: string;
+}
+
 export interface ICriteriaPayload {
   id: number;
   skill: number;
@@ -18,9 +26,9 @@ export interface ICriteriaResponse {
 }
 export interface ICriteriaDatas {
   id?: number;
-  criteria_code?: string;
-  criteria_name?: string;
-  criteria_bobot?: number;
-  criteria_type?: string;
-  criteria_priority?: number;
+  code?: string;
+  name?: string;
+  weight?: number;
+  type?: string;
+  rank_order?: number;
 }

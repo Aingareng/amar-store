@@ -4,6 +4,7 @@ import {
   useState,
   useActionState,
   useEffect,
+  memo,
 } from "react";
 import Modal from "../../../../shared/components/organisms/Modal";
 import Form from "../../../../shared/components/molecules/Form";
@@ -18,20 +19,25 @@ import {
 } from "../types/criteria";
 import { validateCriteriaForm } from "../utils/validateFormInput";
 import useCriteria from "../hooks/useCriteria";
+import { validateCriteriaDuplicates } from "../utils/validateCriteriaDuplicates";
+import { log } from "../../../../shared/utils/log";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
   modalType: "UPDATE" | "CREATE";
   onShowToast: (status: boolean) => void;
   defaultValue?: ICriteriaData;
+  dataFromTable?: ICriteriaData[];
 }
 
-export default function InsertUpdateCriteria({
+function InsertUpdateCriteria({
   ref,
   modalType,
   defaultValue,
   onShowToast,
+  dataFromTable,
 }: IProps) {
+  log("<InsertUpdateCriteria/>", 2, "component");
   const titleModalContent = modalType === "CREATE" ? "Tambah" : "Edit";
   const [formData, setFormData] = useState<ICriteriaDatas>();
 
@@ -70,6 +76,25 @@ export default function InsertUpdateCriteria({
       };
     }
 
+    // Validasi duplikasi menggunakan utility function
+    const duplicateErrors = validateCriteriaDuplicates({
+      existingCriterias: dataFromTable as ICriteriaData[],
+      currentData: data,
+      modalType,
+      defaultValue: defaultValue,
+    });
+
+    if (Object.keys(duplicateErrors).length > 0) {
+      return {
+        errors: duplicateErrors,
+        enteredValue: {
+          ...formData,
+          code: formData?.code,
+          name: formData?.name,
+        },
+      };
+    }
+
     if (modalType === "UPDATE") {
       const payload = {
         name: formData?.name || "",
@@ -94,7 +119,7 @@ export default function InsertUpdateCriteria({
         type: formData?.type as "benefit" | "cost",
         rank_order: formData?.rank_order as number,
       });
-      handleResetForm();
+      handleResetForm("CREATE");
     }
     onShowToast(true);
     setTimeout(() => {
@@ -103,13 +128,20 @@ export default function InsertUpdateCriteria({
     return { errors: null };
   }
 
-  function handleResetForm() {
-    setFormData({
-      name: "",
-      code: "",
-      rank_order: 0,
-      type: "",
-    });
+  function handleResetForm(modalType: "UPDATE" | "CREATE") {
+    if (modalType === "CREATE") {
+      setFormData({
+        name: "",
+        code: "",
+        rank_order: 0,
+        type: "",
+      });
+    }
+    if (modalType === "UPDATE") {
+      setFormData({
+        ...defaultValue,
+      });
+    }
   }
 
   const [formState, formAction] = useActionState(handleInsertUpdateCriteria, {
@@ -121,7 +153,7 @@ export default function InsertUpdateCriteria({
       setFormData(defaultValue);
     }
     if (modalType === "CREATE") {
-      handleResetForm();
+      handleResetForm("CREATE");
     }
   }, [defaultValue, modalType]);
 
@@ -239,7 +271,7 @@ export default function InsertUpdateCriteria({
               attributes={{
                 type: "reset",
                 className: "btn btn-error btn-outline",
-                onClick: handleResetForm,
+                onClick: () => handleResetForm(modalType),
               }}
             >
               Reset
@@ -258,3 +290,5 @@ export default function InsertUpdateCriteria({
     </Modal>
   );
 }
+
+export default memo(InsertUpdateCriteria);

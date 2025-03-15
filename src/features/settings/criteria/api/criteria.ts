@@ -37,17 +37,16 @@ export async function updateCriteria(
 }
 export async function createCriteria(payload: ICriteriaPayload) {
   const response = await api.post<ICriteriaResponse>("/criterias", payload);
-  // console.log("🚀 ~ createCriteria ~ response :", response);
 
   if (response.status !== 400 && response.status !== 500) {
-    console.log("first");
+    return;
   }
-  // console.log("🚀 ~ createCriteria ~ response:", response);
-  console.log("🚀 ~ createCriteria ~ response:", response);
 
   return response;
 }
 
 export async function deleteCriteria(id: number) {
-  return await api.delete<ICriteriaResponse>(`/criteria?id=${id}`);
+  return await api.delete<ICriteriaResponse>(`/criterias`, {
+    id: id.toString(),
+  });
 }

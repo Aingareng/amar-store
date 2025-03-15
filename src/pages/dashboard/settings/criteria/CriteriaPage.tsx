@@ -23,7 +23,7 @@ export default function CriteriaPage() {
   const [searchValue, setSearchValue] = useState("");
   const [toastStatus, setToastStatus] = useState(false);
 
-  const { criterias, isPending, isFetching } = useCriteria({
+  const { criterias, isPending, isFetching, deleteCriteria } = useCriteria({
     search: searchValue,
   });
 
@@ -37,15 +37,21 @@ export default function CriteriaPage() {
         setInserUpdateDialog("UPDATE");
         insertEditDialogRef.current?.showModal();
       }
-      if (type === "DESTROY" && id) {
+      if (type === "DESTROY") {
+        insertEditDialogRef.current?.close();
         destroyDialogRef.current?.showModal();
       }
     },
     []
   );
 
-  function handleDestroyCriteria(id: number) {
-    console.log(id);
+  async function handleDestroyCriteria(id: number) {
+    const result = await deleteCriteria(id);
+    if (result.status === 200) {
+      destroyDialogRef.current?.close();
+    }
+
+    setItemId(0);
   }
   function handleAddCriteria() {
     setInserUpdateDialog("CREATE");
@@ -117,6 +123,7 @@ export default function CriteriaPage() {
         ref={insertEditDialogRef}
         defaultValue={criteria as ICriteriaData}
         onShowToast={handleShowToast}
+        dataFromTable={criterias}
       />
 
       <Modal ref={destroyDialogRef}>

@@ -5,7 +5,12 @@ import {
   getCriteria,
   updateCriteria,
 } from "../api/criteria";
-import { ICriteriaData, ICriteriaQueryParams } from "../types/criteria";
+import { ICriteriaPayload, ICriteriaQueryParams } from "../types/criteria";
+
+type updateMutationType = {
+  id: number;
+  payload: ICriteriaPayload;
+};
 
 export default function useCriteria(params?: ICriteriaQueryParams) {
   const queryClient = useQueryClient();
@@ -15,16 +20,13 @@ export default function useCriteria(params?: ICriteriaQueryParams) {
     isError,
     isFetched,
     isLoading,
+    isPending,
+    isFetching,
   } = useQuery({
     queryKey: ["criteria", params],
     queryFn: () => getCriteria(params as ICriteriaQueryParams),
     initialData: [],
   });
-
-  type updateMutationType = {
-    id: number;
-    payload: ICriteriaData[];
-  };
 
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }: updateMutationType) => {
@@ -36,7 +38,7 @@ export default function useCriteria(params?: ICriteriaQueryParams) {
   });
 
   const createMutation = useMutation({
-    mutationFn: (payload: ICriteriaData) => createCriteria(payload),
+    mutationFn: (payload: ICriteriaPayload) => createCriteria(payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["criteria"] }),
   });
 
@@ -51,6 +53,8 @@ export default function useCriteria(params?: ICriteriaQueryParams) {
     isError,
     isFetched,
     isLoading,
+    isPending,
+    isFetching,
     updateCriteria: updateMutation.mutateAsync,
     createCriteria: createMutation.mutateAsync,
     deleteCriteria: deleteMutation.mutateAsync,

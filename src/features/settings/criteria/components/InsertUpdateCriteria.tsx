@@ -11,23 +11,31 @@ import Label from "../../../../shared/components/atoms/Label";
 import Input from "../../../../shared/components/atoms/Input";
 import Select from "../../../../shared/components/atoms/Select";
 import Button from "../../../../shared/components/atoms/Button";
-import { ICriteriaDatas } from "../types/criteria";
+import {
+  ICriteriaData,
+  ICriteriaDatas,
+  ICriteriaPayload,
+} from "../types/criteria";
 import { validateCriteriaForm } from "../utils/validateFormInput";
+import useCriteria from "../hooks/useCriteria";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
   modalType: "UPDATE" | "CREATE";
-  id?: number;
-  defaultValue?: ICriteriaDatas;
+  onShowToast: (status: boolean) => void;
+  defaultValue?: ICriteriaData;
 }
 
 export default function InsertUpdateCriteria({
   ref,
   modalType,
   defaultValue,
+  onShowToast,
 }: IProps) {
   const titleModalContent = modalType === "CREATE" ? "Tambah" : "Edit";
   const [formData, setFormData] = useState<ICriteriaDatas>();
+
+  const { createCriteria, updateCriteria } = useCriteria();
 
   function handleInputTextChange(event: ChangeEvent<HTMLInputElement>) {
     setFormData((prev) => {
@@ -46,12 +54,12 @@ export default function InsertUpdateCriteria({
       };
     });
   }
-  function handleInsertUpdateCriteria() {
-    const data: ICriteriaDatas = {
-      criteria_name: formData?.criteria_name,
-      criteria_code: formData?.criteria_code,
-      criteria_priority: formData?.criteria_priority,
-      criteria_type: formData?.criteria_type,
+  async function handleInsertUpdateCriteria() {
+    const data: ICriteriaPayload = {
+      name: formData?.name || "",
+      code: formData?.code || "",
+      rank_order: formData?.rank_order as number,
+      type: formData?.type as "benefit" | "cost",
     };
     const validationErrors = validateCriteriaForm(data);
 
@@ -63,21 +71,44 @@ export default function InsertUpdateCriteria({
     }
 
     if (modalType === "UPDATE") {
-      console.log("UPDATED");
+      const payload = {
+        name: formData?.name || "",
+        type: formData?.type as "benefit" | "cost",
+        rank_order: formData?.rank_order as number,
+        code: formData?.code,
+      };
+      await updateCriteria({
+        id: defaultValue?.id as number,
+        payload: {
+          code: payload.code as string,
+          name: payload.name,
+          type: payload.type,
+          rank_order: payload.rank_order,
+        },
+      });
     }
     if (modalType === "CREATE") {
-      console.log("CREATED");
+      await createCriteria({
+        code: formData?.code || "",
+        name: formData?.name || "",
+        type: formData?.type as "benefit" | "cost",
+        rank_order: formData?.rank_order as number,
+      });
+      handleResetForm();
     }
-
+    onShowToast(true);
+    setTimeout(() => {
+      onShowToast(false);
+    }, 2000);
     return { errors: null };
   }
 
   function handleResetForm() {
     setFormData({
-      criteria_name: "",
-      criteria_code: "",
-      criteria_priority: 0,
-      criteria_type: "",
+      name: "",
+      code: "",
+      rank_order: 0,
+      type: "",
     });
   }
 
@@ -88,6 +119,9 @@ export default function InsertUpdateCriteria({
   useEffect(() => {
     if (modalType === "UPDATE") {
       setFormData(defaultValue);
+    }
+    if (modalType === "CREATE") {
+      handleResetForm();
     }
   }, [defaultValue, modalType]);
 
@@ -108,9 +142,9 @@ export default function InsertUpdateCriteria({
               labelType="form-control"
               leftLabel="Kode Kriteria"
               bottomLeftLabel={
-                formState.errors?.criteria_code && (
+                formState.errors?.code && (
                   <p className="text-red-500 text-sm">
-                    {formState.errors?.criteria_code}
+                    {formState.errors?.code}
                   </p>
                 )
               }
@@ -118,10 +152,10 @@ export default function InsertUpdateCriteria({
               <Input
                 attributes={{
                   type: "text",
-                  name: "criteria_code",
+                  name: "code",
                   className: "input input-bordered w-full max-w-xs",
                   placeholder: "Cth: K1",
-                  value: formData?.criteria_code || "",
+                  value: formData?.code || "",
                   onChange: (e) => handleInputTextChange(e),
                 }}
               />
@@ -130,9 +164,9 @@ export default function InsertUpdateCriteria({
               labelType="form-control"
               leftLabel="Nama Kriteria"
               bottomLeftLabel={
-                formState.errors?.criteria_name && (
+                formState.errors?.name && (
                   <p className="text-red-500 text-sm">
-                    {formState.errors?.criteria_name}
+                    {formState.errors?.name}
                   </p>
                 )
               }
@@ -140,10 +174,10 @@ export default function InsertUpdateCriteria({
               <Input
                 attributes={{
                   type: "text",
-                  name: "criteria_name",
+                  name: "name",
                   className: "input input-bordered w-full max-w-xs",
                   placeholder: "Masukan nama kriteria",
-                  value: formData?.criteria_name || "",
+                  value: formData?.name || "",
                   onChange: (e) => handleInputTextChange(e),
                 }}
               />
@@ -153,9 +187,9 @@ export default function InsertUpdateCriteria({
               labelType="form-control"
               leftLabel="Jenis Kriteria"
               bottomLeftLabel={
-                formState.errors?.criteria_type && (
+                formState.errors?.type && (
                   <p className="text-red-500 text-sm">
-                    {formState.errors?.criteria_type}
+                    {formState.errors?.type}
                   </p>
                 )
               }
@@ -163,9 +197,8 @@ export default function InsertUpdateCriteria({
               <Select
                 attr={{
                   className: "select select-bordered w-full max-w-xs",
-                  defaultValue: "",
-                  name: "criteria_type",
-                  value: formData?.criteria_type,
+                  name: "type",
+                  value: formData?.type || "",
                   onChange: (e) => handleSelectInputChange(e),
                 }}
               >
@@ -181,9 +214,9 @@ export default function InsertUpdateCriteria({
               labelType="form-control"
               leftLabel="Tingkat Prioritas"
               bottomLeftLabel={
-                formState.errors?.criteria_priority && (
+                formState.errors?.rank_order && (
                   <p className="text-red-500 text-sm">
-                    {formState.errors?.criteria_priority}
+                    {formState.errors?.rank_order}
                   </p>
                 )
               }
@@ -191,10 +224,10 @@ export default function InsertUpdateCriteria({
               <Input
                 attributes={{
                   type: "number",
-                  name: "criteria_priority",
+                  name: "rank_order",
                   className: "input input-bordered w-full max-w-xs",
                   placeholder: "Masukan prioritas kriteria",
-                  value: formData?.criteria_priority || "",
+                  value: formData?.rank_order || "",
                   onChange: (e) => handleInputTextChange(e),
                 }}
               />

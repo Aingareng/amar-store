@@ -49,28 +49,28 @@ export function validateEmployeeData(data: IEmployeePayload) {
   }
 
   // Validasi experience
-  if (!data.experience) {
-    errors.experience = "Experience tidak boleh kosong.";
+  if (!data.k4) {
+    errors.k4 = "Experience tidak boleh kosong.";
   }
 
   // Validasi leadership
-  if (!data.leadership) {
-    errors.leadership = "Leadership tidak boleh kosong.";
+  if (!data.k5) {
+    errors.k5 = "Leadership tidak boleh kosong.";
   }
 
   // Validasi age
-  if (!data.age) {
-    errors.age = "Umur tidak boleh kosong.";
+  if (!data.k3) {
+    errors.k3 = "Umur tidak boleh kosong.";
   }
 
   // Validasi education
-  if (!data.education) {
-    errors.education = "Education tidak boleh kosong.";
+  if (!data.k2) {
+    errors.k2 = "Education tidak boleh kosong.";
   }
 
   // Validasi skill
-  if (!data.skill) {
-    errors.skill = "Skill tidak boleh kosong.";
+  if (!data.k1) {
+    errors.k1 = "Skill tidak boleh kosong.";
   }
 
   // Jika tidak ada error, maka isValid = true

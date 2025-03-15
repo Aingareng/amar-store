@@ -1,23 +1,24 @@
 export interface ICriteriaData {
-  id: number;
-  name: string;
-  rank_order: number;
-  weight: number;
-  type: "benefit" | "cost";
-  code: string;
+  id?: number;
+  name?: string;
+  rank_order?: number;
+  weight?: number;
+  type?: "benefit" | "cost";
+  code?: string;
 }
 
 export interface ICriteriaQueryParams {
+  id?: number;
   search?: string;
 }
 
 export interface ICriteriaPayload {
-  id: number;
-  skill: number;
-  education: number;
-  experience: number;
-  age: number;
-  leader: number;
+  id?: number;
+  name: string;
+  rank_order: number;
+  // weight: number;
+  type: "benefit" | "cost";
+  code: string;
 }
 export interface ICriteriaResponse {
   status: number;

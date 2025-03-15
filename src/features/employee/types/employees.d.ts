@@ -16,16 +16,17 @@ export interface Employees {
   password: string;
   phone: string;
   isMale: boolean;
-  age: Date;
-  education: string;
-  experience: Date;
-  leadership: string;
+  k3: Date;
+  k2: string;
+  k4: Date;
+  k5: string;
   createdAt: Date;
   updatedAt: Date;
   final_score: number;
   rangking: number;
   position: string;
-  skill: string;
+  k1: string;
+  score?: number;
 }
 
 export interface EmployeeDetail {
@@ -47,11 +48,11 @@ export interface IEmployeePayload {
   password: string;
   phone: string;
   // isMale: boolean;
-  age: string;
+  k3: string;
   gender: "male" | "female";
-  education: string;
-  experience: string;
-  leadership: string;
+  k2: string;
+  k4: string;
+  k5: string;
   position: string;
-  skill: string;
+  k1: string;
 }

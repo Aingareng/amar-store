@@ -1,28 +1,27 @@
 import { ICriteriaDatas } from "../types/criteria";
 
 export interface IFormErrors {
-  criteria_code?: string;
-  criteria_name?: string;
-  criteria_type?: string;
-  criteria_priority?: string;
+  code?: string;
+  name?: string;
+  type?: string;
+  rank_order?: string;
 }
 
 export function validateCriteriaForm(data: ICriteriaDatas) {
   const errors: IFormErrors = {};
-  const { criteria_code, criteria_name, criteria_priority, criteria_type } =
-    data;
+  const { code, name, rank_order, type } = data;
 
-  if (!criteria_code?.trim()) {
-    errors.criteria_code = "Nomor kriteria tidak boleh kosong.";
+  if (!code?.trim()) {
+    errors.code = "Nomor kriteria tidak boleh kosong.";
   }
-  if (!criteria_name?.trim()) {
-    errors.criteria_name = "Nama kriteria tidak boleh kosong";
+  if (!name?.trim()) {
+    errors.name = "Nama kriteria tidak boleh kosong";
   }
-  if (!criteria_type?.trim()) {
-    errors.criteria_type = "Jenis kriteria tidak boleh kosong";
+  if (!type?.trim()) {
+    errors.type = "Jenis kriteria tidak boleh kosong";
   }
-  if (criteria_priority && (criteria_priority < 1 || criteria_priority > 5)) {
-    errors.criteria_priority = "Nilai harus berada dalam rentang 1 sampai 5.";
+  if (rank_order && (rank_order < 1 || rank_order > 5)) {
+    errors.rank_order = "Nilai harus berada dalam rentang 1 sampai 5.";
   }
   const isValid = Object.keys(errors).length === 0;
 

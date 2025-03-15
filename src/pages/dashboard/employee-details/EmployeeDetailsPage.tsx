@@ -36,16 +36,16 @@ export default function EmployeeDetails() {
     id: slug,
   });
   const [initialValue, setInitialValue] = useState({
-    age: "",
-    education: "",
+    k3: "",
+    k2: "",
     email: "",
-    experience: "",
+    k4: "",
     gender: "",
-    leadership: "",
+    k5: "",
     password: "",
     phone: "",
     position: "",
-    skill: "",
+    k1: "",
   });
 
   const employee = employees[0] || initialValue;
@@ -55,16 +55,16 @@ export default function EmployeeDetails() {
       setInitialValue((prevState) => {
         const updatedEmployee = {
           ...prevState,
-          age: employee.age.toString(),
-          experience: employee.experience.toString(),
+          k3: employee.k3.toString(),
+          k4: employee.k4.toString(),
           gender: employee.isMale ? "male" : "female",
           email: employee.email,
-          education: employee.education,
-          leadership: employee.leadership,
+          k2: employee.k2,
+          k5: employee.k5,
           password: employee.password,
           phone: employee.phone,
           position: employee.position,
-          skill: employee.skill,
+          k1: employee.k1,
         };
 
         return updatedEmployee;
@@ -76,9 +76,9 @@ export default function EmployeeDetails() {
   inputEmailAttr.onChange = (event: ChangeEvent<HTMLInputElement>) =>
     handleTextInputChange("email", event);
 
-  inputSkillAttr.value = initialValue.skill;
+  inputSkillAttr.value = initialValue.k1;
   inputSkillAttr.onChange = (event: ChangeEvent<HTMLInputElement>) =>
-    handleTextInputChange("skill", event);
+    handleTextInputChange("k1", event);
 
   inputPhoneNumber.value = initialValue.phone;
   inputPhoneNumber.onChange = (e) => handleTextInputChange("phone", e);
@@ -89,21 +89,21 @@ export default function EmployeeDetails() {
   inputPosition.value = initialValue.position;
   inputPosition.onChange = (e) => handleTextInputChange("position", e);
 
-  ageAttr.value = initialValue.age;
+  ageAttr.value = initialValue.k3;
   // String(initialValue.age);
 
-  ageAttr.onChange = (e) => handleTextInputChange("age", e);
+  ageAttr.onChange = (e) => handleTextInputChange("k3", e);
 
-  experienceAttr.value = initialValue.experience;
+  experienceAttr.value = initialValue.k4;
   // toISOString().split("T")[0];
   experienceAttr.onChange = (e) => handleTextInputChange("experience", e);
 
-  leaderAttr.value = initialValue.leadership;
-  leaderAttr.onChange = (e) => handleTextInputChange("leadership", e);
+  leaderAttr.value = initialValue.k5;
+  leaderAttr.onChange = (e) => handleTextInputChange("k5", e);
 
-  selectAttr.value = initialValue.education;
+  selectAttr.value = initialValue.k4;
   selectAttr.onChange = (event: ChangeEvent<HTMLSelectElement>) =>
-    handleSelectChange("education", event);
+    handleSelectChange("k4", event);
 
   genderManAttr.value = initialValue.gender;
   genderManAttr.onChange = () => handleGenderChange("male");
@@ -151,12 +151,12 @@ export default function EmployeeDetails() {
   async function handleUpdateEmployee() {
     const data = {
       ...initialValue,
-      age: String(initialValue.age),
-      experience: String(initialValue.experience),
+      k3: String(initialValue.k3),
+      k4: String(initialValue.k4),
       gender: initialValue.gender as "male" | "female",
-      education: String(initialValue.education),
-      leadership: String(initialValue.leadership),
-      skill: String(initialValue.skill),
+      k2: String(initialValue.k2),
+      k5: String(initialValue.k5),
+      k1: String(initialValue.k1),
     };
     const validationErrors = validateEmployeeData(data);
 
@@ -171,12 +171,12 @@ export default function EmployeeDetails() {
       id: slug as string,
       employeeData: {
         ...initialValue,
-        experience: initialValue.experience,
-        age: initialValue.age,
+        k4: initialValue.k4,
+        k3: initialValue.k3,
         gender: initialValue.gender as "male" | "female",
-        education: String(initialValue.education),
-        leadership: String(initialValue.leadership),
-        skill: String(initialValue.skill),
+        k2: String(initialValue.k2),
+        k5: String(initialValue.k5),
+        k1: String(initialValue.k1),
       },
     };
     const response = await editEmployee(payload);

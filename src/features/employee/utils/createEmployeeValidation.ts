@@ -49,10 +49,10 @@ export function validateEmployeeData(data: IEmployeePayload) {
   }
 
   // Validasi experience
-  if (!data.experience) {
-    errors.experience = "Experience tidak boleh kosong.";
+  if (!data.k4) {
+    errors.k4 = "Experience tidak boleh kosong.";
   } else {
-    const dateOfExperience = new Date(data.experience);
+    const dateOfExperience = new Date(data.k4);
     if (isNaN(dateOfExperience.getTime())) {
       errors.experience = "Format tanggal experience tidak valid.";
     } else if (dateOfExperience > new Date()) {
@@ -61,15 +61,15 @@ export function validateEmployeeData(data: IEmployeePayload) {
   }
 
   // Validasi leadership
-  if (!data.leadership) {
-    errors.leadership = "Leadership tidak boleh kosong.";
+  if (!data.k5) {
+    errors.k5 = "Leadership tidak boleh kosong.";
   }
 
   // Validasi age
-  if (!data.age) {
-    errors.age = "Umur tidak boleh kosong.";
+  if (!data.k3) {
+    errors.k3 = "Umur tidak boleh kosong.";
   } else {
-    const dateOfBirth = new Date(data.age);
+    const dateOfBirth = new Date(data.k3);
     if (isNaN(dateOfBirth.getTime())) {
       errors.age = "Format tanggal lahir tidak valid.";
     } else if (dateOfBirth > new Date()) {
@@ -78,13 +78,13 @@ export function validateEmployeeData(data: IEmployeePayload) {
   }
 
   // Validasi education
-  if (!data.education) {
-    errors.education = "Education tidak boleh kosong.";
+  if (!data.k2) {
+    errors.k2 = "Education tidak boleh kosong.";
   }
 
   // Validasi skill
-  if (!data.skill) {
-    errors.skill = "Leadership tidak boleh kosong.";
+  if (!data.k1) {
+    errors.k1 = "Leadership tidak boleh kosong.";
   }
 
   // Jika tidak ada error, maka isValid = true

@@ -36,12 +36,13 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
     position: "",
     phone: "",
     gender: "male",
-    experience: "",
-    leadership: "",
-    age: "",
-    education: "",
-    skill: "",
+    k4: "",
+    k5: "",
+    k3: "",
+    k1: "",
+    k2: "",
   });
+  // console.log("🚀 ~ CreateEmployee ~ formData:", formData);
 
   // Handler untuk input text
   function handleTextInputChange(
@@ -59,7 +60,7 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
   function handleSelectChange(event: ChangeEvent<HTMLSelectElement>) {
     setFormData((prev) => ({
       ...prev,
-      education: event.target.value,
+      k2: event.target.value,
     }));
   }
 
@@ -74,7 +75,7 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
   const handleSkillSelected = useCallback((count: number) => {
     setFormData((prev) => ({
       ...prev,
-      skill: String(count * 10),
+      k1: String(count * 7.5),
     }));
   }, []);
 
@@ -90,8 +91,8 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
 
     const payload: IEmployeePayload = {
       ...formData,
-      experience: String(calculateExperience(formData.experience)),
-      age: String(calculateAge(formData.age)),
+      k4: String(calculateExperience(formData.k4)),
+      k3: String(calculateAge(formData.k3)),
     };
 
     const response = await createEmployee(payload);
@@ -121,17 +122,17 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
 
   function handleResetForm() {
     setFormData({
-      age: "",
-      education: "",
+      k3: "",
+      k2: "",
       email: "",
-      experience: "",
+      k4: "",
       gender: "male",
-      leadership: "",
+      k5: "",
       password: "",
       phone: "",
       position: "",
       username: "",
-      skill: "",
+      k1: "",
     });
   }
 
@@ -278,19 +279,18 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
               >
                 <Select
                   attr={{
-                    name: "education",
+                    name: "k2",
                     className: "select select-bordered",
-                    value: formData.education,
+                    value: formData.k2,
                     onChange: handleSelectChange,
                   }}
                 >
                   <option disabled value="">
                     Pilih Satu
                   </option>
-                  <option value={2}>SMA/SMK</option>
-                  <option value={3}>D3</option>
-                  <option value={4}>S1</option>
-                  <option value={5}>S2</option>
+                  <option value="2">SMA/SMK</option>
+                  <option value="3">D3</option>
+                  <option value="4">S1</option>
                 </Select>
               </Label>
               <Label
@@ -303,10 +303,10 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                 <Input
                   attributes={{
                     type: "date",
-                    name: "age",
+                    name: "k3",
                     className: "input input-bordered w-full",
-                    value: formData.age,
-                    onChange: (e) => handleTextInputChange("age", e),
+                    value: formData.k3,
+                    onChange: (e) => handleTextInputChange("k3", e),
                   }}
                 />
               </Label>
@@ -320,10 +320,10 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                 <Input
                   attributes={{
                     type: "date",
-                    name: "experience",
+                    name: "k4",
                     className: "input input-bordered w-full",
-                    value: formData.experience,
-                    onChange: (e) => handleTextInputChange("experience", e),
+                    value: formData.k4,
+                    onChange: (e) => handleTextInputChange("k4", e),
                   }}
                 />
               </Label>
@@ -337,12 +337,12 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
                 <Input
                   attributes={{
                     type: "number",
-                    name: "leadership",
+                    name: "k5",
                     className: "input input-bordered w-full",
                     min: 0,
-                    value: formData.leadership,
+                    value: formData.k5,
                     placeholder: "Cth : 10",
-                    onChange: (e) => handleTextInputChange("leadership", e),
+                    onChange: (e) => handleTextInputChange("k5", e),
                   }}
                 />
               </Label>

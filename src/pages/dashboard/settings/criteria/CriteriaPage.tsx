@@ -6,6 +6,12 @@ import Modal from "../../../../shared/components/organisms/Modal";
 import InsertUpdateCriteria from "../../../../features/settings/criteria/components/InsertUpdateCriteria";
 import CriteriaFilter from "../../../../features/settings/criteria/components/CriteriaFilter";
 import useCriteria from "../../../../features/settings/criteria/hooks/useCriteria";
+import EmptyTableData from "../../../../shared/components/molecules/EmptyTableData";
+import Loading from "../../../../shared/components/atoms/Loading";
+import Toast from "../../../../shared/components/molecules/Toast";
+import Alert from "../../../../shared/components/atoms/Alert";
+import { useCriteriaById } from "../../../../features/settings/criteria/hooks/useCriteriaById";
+import { ICriteriaData } from "../../../../features/settings/criteria/types/criteria";
 
 export default function CriteriaPage() {
   const destroyDialogRef = useRef<HTMLDialogElement>(null);
@@ -15,18 +21,21 @@ export default function CriteriaPage() {
     "UPDATE" | "CREATE"
   >();
   const [searchValue, setSearchValue] = useState("");
+  const [toastStatus, setToastStatus] = useState(false);
 
-  const { criterias } = useCriteria({
+  const { criterias, isPending, isFetching } = useCriteria({
     search: searchValue,
   });
+
+  const { data: criteria } = useCriteriaById(itemId);
 
   const handleTableAction = useCallback(
     (id: number, type: "EDIT" | "DESTROY") => {
       setItemId(id);
 
       if (type === "EDIT" && id) {
-        insertEditDialogRef.current?.showModal();
         setInserUpdateDialog("UPDATE");
+        insertEditDialogRef.current?.showModal();
       }
       if (type === "DESTROY" && id) {
         destroyDialogRef.current?.showModal();
@@ -45,34 +54,69 @@ export default function CriteriaPage() {
   function handleFilterTable(value: string) {
     setSearchValue(value);
   }
+  function handleShowToast(status: boolean) {
+    setToastStatus(status);
+    insertEditDialogRef.current?.close();
+  }
+
+  let mainContent = (
+    <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
+      <CriteriaFilter onSearch={handleFilterTable} />
+
+      <CriteriaTable criteriaData={criterias} tableAction={handleTableAction} />
+    </main>
+  );
+
+  if (criterias.length < 1) {
+    mainContent = (
+      <EmptyTableData
+        title="Data kriteria kosong"
+        text="Silakan tambahkan kriteria"
+      />
+    );
+  }
+
+  if (isFetching || isPending) {
+    mainContent = <Loading loadingType="loading-bars" />;
+  }
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      <header className=" flex justify-between items-center">
+      {toastStatus && (
+        <Toast>
+          <Alert>
+            <span>
+              Berhasil{" "}
+              {insertUpdateDialog === "UPDATE" ? "mengubah" : "menambah"}{" "}
+              kriteria
+            </span>
+          </Alert>
+        </Toast>
+      )}
+      <header className=" flex justify-between items-center ">
         <h1 className="text-3xl font-bold">Daftar Kriteria</h1>
         <Button
           attributes={{
-            className: "btn btn-primary",
+            className: `btn btn-primary ${
+              criterias.length === 5 ? "cursor-not-allowed" : ""
+            }`,
             onClick: handleAddCriteria,
+            disabled: criterias.length === 5,
           }}
         >
           <Icon icon="material-symbols:add-2-rounded" width="24" height="24" />
           Tambah Kriteria
         </Button>
       </header>
-      <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
-        <CriteriaFilter onSearch={handleFilterTable} />
 
-        <CriteriaTable
-          criteriaData={criterias}
-          tableAction={handleTableAction}
-        />
-      </main>
+      {mainContent}
 
       {/* Modal section */}
       <InsertUpdateCriteria
         modalType={insertUpdateDialog as "UPDATE" | "CREATE"}
         ref={insertEditDialogRef}
+        defaultValue={criteria as ICriteriaData}
+        onShowToast={handleShowToast}
       />
 
       <Modal ref={destroyDialogRef}>

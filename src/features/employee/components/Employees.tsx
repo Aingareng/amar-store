@@ -11,13 +11,16 @@ import Alert from "../../../shared/components/atoms/Alert";
 import List from "../../../shared/components/atoms/List";
 import { Link } from "react-router-dom";
 import Button from "../../../shared/components/atoms/Button";
+import Loading from "../../../shared/components/atoms/Loading";
+import EmptyTableData from "../../../shared/components/molecules/EmptyTableData";
 
 export default function Employees() {
   const [toastStatus, setToastStatus] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  const { employees, deleteEmployee } = useEmployees({
-    search: searchInput,
-  });
+  const { employees, deleteEmployee, isFetching, isPending, isFetched } =
+    useEmployees({
+      search: searchInput,
+    });
 
   function handleSearchInput(input: string) {
     setSearchInput(input);
@@ -42,7 +45,7 @@ export default function Employees() {
     </tr>
   );
 
-  return (
+  let mainContent = (
     <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
       {toastStatus && (
         <Toast>
@@ -72,7 +75,7 @@ export default function Employees() {
               </div>
             </td>
             <td>{item.position}</td>
-            <td>{item.final_score}</td>
+            <td>{item.score}</td>
 
             <th>
               <Dropdown itemIndex={item.id} onAction={handleDestroyEmployee}>
@@ -95,4 +98,19 @@ export default function Employees() {
       </Table>
     </main>
   );
+
+  if (isFetching || isPending) {
+    mainContent = <Loading loadingType="loading-bars" />;
+  }
+
+  if (isFetched && employees.length === 0) {
+    mainContent = (
+      <EmptyTableData
+        title="Data Karyawa kosong"
+        text="Silahkan menambahkan karyawan terlebih dahulu"
+      />
+    );
+  }
+
+  return mainContent;
 }

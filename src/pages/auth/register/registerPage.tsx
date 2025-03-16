@@ -1,5 +1,5 @@
+import LoginForm from "../../../features/auth/components/LoginForm";
 import AuthLayout from "../layout";
-import LoginForm from "../../../features/components/LoginForm";
 
 export default function registerPage() {
   return (

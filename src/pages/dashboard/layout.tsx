@@ -1,4 +1,3 @@
-import React from "react";
 import Navbar from "../../shared/components/organisms/Navbar";
 import { Outlet } from "react-router-dom";
 

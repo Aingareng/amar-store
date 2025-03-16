@@ -20,7 +20,6 @@ import {
 import { validateCriteriaForm } from "../utils/validateFormInput";
 import useCriteria from "../hooks/useCriteria";
 import { validateCriteriaDuplicates } from "../utils/validateCriteriaDuplicates";
-import { log } from "../../../../shared/utils/log";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
@@ -37,7 +36,6 @@ function InsertUpdateCriteria({
   onShowToast,
   dataFromTable,
 }: IProps) {
-  log("<InsertUpdateCriteria/>", 2, "component");
   const titleModalContent = modalType === "CREATE" ? "Tambah" : "Edit";
   const [formData, setFormData] = useState<ICriteriaDatas>();
 

@@ -16,9 +16,9 @@ import { ICriteriaData } from "../../../../features/settings/criteria/types/crit
 export default function CriteriaPage() {
   const destroyDialogRef = useRef<HTMLDialogElement>(null);
   const insertEditDialogRef = useRef<HTMLDialogElement>(null);
-  const [itemId, setItemId] = useState<number>();
+  const [itemId, setItemId] = useState<number | null>(null);
   const [insertUpdateDialog, setInserUpdateDialog] = useState<
-    "UPDATE" | "CREATE"
+    "UPDATE" | "CREATE" | "DESTROY"
   >();
   const [searchValue, setSearchValue] = useState("");
   const [toastStatus, setToastStatus] = useState(false);
@@ -49,9 +49,10 @@ export default function CriteriaPage() {
     const result = await deleteCriteria(id);
     if (result.status === 200) {
       destroyDialogRef.current?.close();
+      setToastStatus(false);
     }
 
-    setItemId(0);
+    setItemId(null);
   }
   function handleAddCriteria() {
     setInserUpdateDialog("CREATE");
@@ -86,16 +87,24 @@ export default function CriteriaPage() {
     mainContent = <Loading loadingType="loading-bars" />;
   }
 
+  let toastContent = "";
+
+  if (insertUpdateDialog === "CREATE") {
+    toastContent = "menambah";
+  }
+  if (insertUpdateDialog === "UPDATE") {
+    toastContent = "mengubah";
+  }
+  if (insertUpdateDialog === "DESTROY") {
+    toastContent = "menghapus";
+  }
+
   return (
     <div className="grid grid-cols-1 gap-5">
       {toastStatus && (
         <Toast>
           <Alert>
-            <span>
-              Berhasil{" "}
-              {insertUpdateDialog === "UPDATE" ? "mengubah" : "menambah"}{" "}
-              kriteria
-            </span>
+            <span>Berhasil {toastContent} kriteria</span>
           </Alert>
         </Toast>
       )}

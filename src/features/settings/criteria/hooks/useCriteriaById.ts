@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { findCriteria } from "../api/criteria";
 
-export function useCriteriaById(id: number | undefined) {
+export function useCriteriaById(id: number | null) {
   return useQuery({
     queryKey: ["criteria", id],
     // hanya fetch kalau id ada (enabled: !!id)

@@ -80,6 +80,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="navbar-center">
+        <img src="/amar-icon.jpg" alt="icon store" width={50} />
         <Link to="/" className="btn btn-ghost text-xl">
           Toko Amar
         </Link>

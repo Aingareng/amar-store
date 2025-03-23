@@ -58,58 +58,59 @@ export default function Employees() {
       <div>
         <EmployeeFilter onSearch={handleSearchInput} />
       </div>
-      <Table tableHead={tableHead}>
-        {employees.map((item, index) => (
-          <tr key={index} className="hover">
-            <th>{index + 1}</th>
-            <td>
-              <div className="flex items-center gap-3">
-                <div className="grid grid-cols-1 gap-1">
-                  <p className="font-bold">
-                    {formatString(item.username, "capitalize")}
-                  </p>
-                  <div className="text-sm opacity-50 flex items-center text-success">
-                    <Whatsapp /> <span className="text-xs">{item.phone}</span>
+
+      {isFetched && employees.length === 0 && (
+        <EmptyTableData
+          title="Data Karyawan kosong"
+          text="Silahkan menambahkan karyawan terlebih dahulu"
+        />
+      )}
+
+      {isFetched && employees.length > 0 && (
+        <Table tableHead={tableHead}>
+          {employees.map((item, index) => (
+            <tr key={index} className="hover">
+              <th>{index + 1}</th>
+              <td>
+                <div className="flex items-center gap-3">
+                  <div className="grid grid-cols-1 gap-1">
+                    <p className="font-bold">
+                      {formatString(item.username, "capitalize")}
+                    </p>
+                    <div className="text-sm opacity-50 flex items-center text-success">
+                      <Whatsapp /> <span className="text-xs">{item.phone}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </td>
-            <td>{item.position}</td>
-            <td>{item.score}</td>
+              </td>
+              <td>{item.position}</td>
+              <td>{item.score}</td>
 
-            <th>
-              <Dropdown itemIndex={item.id} onAction={handleDestroyEmployee}>
-                <List>
-                  <Link to={`/employee-details/${item.id}`}>Detail</Link>
-                </List>
-                <List>
-                  <Button
-                    attributes={{
-                      onClick: () => handleDestroyEmployee(item.id),
-                    }}
-                  >
-                    Hapus
-                  </Button>
-                </List>
-              </Dropdown>
-            </th>
-          </tr>
-        ))}
-      </Table>
+              <th>
+                <Dropdown itemIndex={item.id} onAction={handleDestroyEmployee}>
+                  <List>
+                    <Link to={`/employee-details/${item.id}`}>Detail</Link>
+                  </List>
+                  <List>
+                    <Button
+                      attributes={{
+                        onClick: () => handleDestroyEmployee(item.id),
+                      }}
+                    >
+                      Hapus
+                    </Button>
+                  </List>
+                </Dropdown>
+              </th>
+            </tr>
+          ))}
+        </Table>
+      )}
     </main>
   );
 
   if (isFetching || isPending) {
     mainContent = <Loading loadingType="loading-bars" />;
-  }
-
-  if (isFetched && employees.length === 0) {
-    mainContent = (
-      <EmptyTableData
-        title="Data Karyawa kosong"
-        text="Silahkan menambahkan karyawan terlebih dahulu"
-      />
-    );
   }
 
   return mainContent;

@@ -70,18 +70,21 @@ export default function CriteriaPage() {
     <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
       <CriteriaFilter onSearch={handleFilterTable} />
 
-      <CriteriaTable criteriaData={criterias} tableAction={handleTableAction} />
+      {criterias.length === 0 && (
+        <EmptyTableData
+          title="Data kriteria kosong"
+          text="Silakan tambahkan kriteria"
+        />
+      )}
+
+      {criterias.length > 0 && (
+        <CriteriaTable
+          criteriaData={criterias}
+          tableAction={handleTableAction}
+        />
+      )}
     </main>
   );
-
-  if (criterias.length < 1) {
-    mainContent = (
-      <EmptyTableData
-        title="Data kriteria kosong"
-        text="Silakan tambahkan kriteria"
-      />
-    );
-  }
 
   if (isFetching || isPending) {
     mainContent = <Loading loadingType="loading-bars" />;

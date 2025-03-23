@@ -23,7 +23,7 @@ export default function useCriteria(params?: ICriteriaQueryParams) {
     isPending,
     isFetching,
   } = useQuery({
-    queryKey: ["criteria", params],
+    queryKey: ["criterias", params],
     queryFn: () => getCriteria(params as ICriteriaQueryParams),
     initialData: [],
   });
@@ -33,18 +33,18 @@ export default function useCriteria(params?: ICriteriaQueryParams) {
       return updateCriteria(id, payload);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["criteria"] });
+      queryClient.invalidateQueries({ queryKey: ["criterias"] });
     },
   });
 
   const createMutation = useMutation({
     mutationFn: (payload: ICriteriaPayload) => createCriteria(payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["criteria"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["criterias"] }),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteCriteria(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["criteria"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["criterias"] }),
   });
 
   return {

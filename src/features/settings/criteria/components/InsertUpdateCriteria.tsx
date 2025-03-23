@@ -5,6 +5,7 @@ import {
   useActionState,
   useEffect,
   memo,
+  useCallback,
 } from "react";
 import Modal from "../../../../shared/components/organisms/Modal";
 import Form from "../../../../shared/components/molecules/Form";
@@ -126,21 +127,40 @@ function InsertUpdateCriteria({
     return { errors: null };
   }
 
-  function handleResetForm(modalType: "UPDATE" | "CREATE") {
-    if (modalType === "CREATE") {
-      setFormData({
-        name: "",
-        code: "",
-        rank_order: 0,
-        type: "",
-      });
-    }
-    if (modalType === "UPDATE") {
-      setFormData({
-        ...defaultValue,
-      });
-    }
-  }
+  const handleResetForm = useCallback(
+    (modalType: "UPDATE" | "CREATE") => {
+      if (modalType === "CREATE") {
+        setFormData({
+          name: "",
+          code: "",
+          rank_order: 0,
+          type: "",
+        });
+      }
+      if (modalType === "UPDATE") {
+        setFormData({
+          ...defaultValue,
+        });
+      }
+    },
+    [defaultValue]
+  );
+
+  // function handleResetForm(modalType: "UPDATE" | "CREATE") {
+  //   if (modalType === "CREATE") {
+  //     setFormData({
+  //       name: "",
+  //       code: "",
+  //       rank_order: 0,
+  //       type: "",
+  //     });
+  //   }
+  //   if (modalType === "UPDATE") {
+  //     setFormData({
+  //       ...defaultValue,
+  //     });
+  //   }
+  // }
 
   const [formState, formAction] = useActionState(handleInsertUpdateCriteria, {
     errors: null,
@@ -153,7 +173,7 @@ function InsertUpdateCriteria({
     if (modalType === "CREATE") {
       handleResetForm("CREATE");
     }
-  }, [defaultValue, modalType]);
+  }, [defaultValue, modalType, handleResetForm]);
 
   return (
     <Modal ref={ref}>

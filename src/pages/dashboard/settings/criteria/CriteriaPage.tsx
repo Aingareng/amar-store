@@ -10,8 +10,8 @@ import EmptyTableData from "../../../../shared/components/molecules/EmptyTableDa
 import Loading from "../../../../shared/components/atoms/Loading";
 import Toast from "../../../../shared/components/molecules/Toast";
 import Alert from "../../../../shared/components/atoms/Alert";
-import { useCriteriaById } from "../../../../features/settings/criteria/hooks/useCriteriaById";
 import { ICriteriaData } from "../../../../features/settings/criteria/types/criteria";
+import { useCriteriaById } from "../../../../features/settings/criteria/hooks/useCriteriaById";
 
 export default function CriteriaPage() {
   const destroyDialogRef = useRef<HTMLDialogElement>(null);
@@ -38,7 +38,7 @@ export default function CriteriaPage() {
         insertEditDialogRef.current?.showModal();
       }
       if (type === "DESTROY") {
-        insertEditDialogRef.current?.close();
+        setInserUpdateDialog("DESTROY");
         destroyDialogRef.current?.showModal();
       }
     },
@@ -46,12 +46,15 @@ export default function CriteriaPage() {
   );
 
   async function handleDestroyCriteria(id: number) {
+    destroyDialogRef.current?.close();
     const result = await deleteCriteria(id);
     if (result.status === 200) {
-      destroyDialogRef.current?.close();
-      setToastStatus(false);
-    }
+      setToastStatus(true);
 
+      setTimeout(() => {
+        setToastStatus(false);
+      }, 2000);
+    }
     setItemId(null);
   }
   function handleAddCriteria() {

@@ -23,7 +23,11 @@ export default function Home() {
   }
   return (
     <>
-      <CreateEmployee ref={dialogRef} onShowToast={handleShowToast} />
+      <CreateEmployee
+        ref={dialogRef}
+        onShowToast={handleShowToast}
+        onClose={() => dialogRef.current?.close()}
+      />
       {toastStatus && (
         <Toast>
           <Alert>

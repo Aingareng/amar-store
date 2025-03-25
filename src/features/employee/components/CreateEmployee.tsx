@@ -23,9 +23,10 @@ import SkillsInputSection from "./SkillsInputSection";
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
   onShowToast: (status: boolean) => void;
+  onClose: () => void;
 }
 
-export default function CreateEmployee({ ref, onShowToast }: IProps) {
+export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
   const { createEmployee } = useEmployees();
 
   // State untuk form inputs
@@ -134,6 +135,11 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
       username: "",
       k1: "",
     });
+  }
+
+  function handleCancel() {
+    handleResetForm();
+    onClose();
   }
 
   const { formAttr, submitAttr } = createEmployeeAttributes;
@@ -355,8 +361,8 @@ export default function CreateEmployee({ ref, onShowToast }: IProps) {
             <Button
               attributes={{
                 className: "btn btn-outline btn-error",
-                type: "reset",
-                onClick: handleResetForm,
+                type: "button",
+                onClick: handleCancel,
               }}
             >
               Batal

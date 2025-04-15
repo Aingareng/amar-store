@@ -4,6 +4,7 @@ import {
   ChangeEvent,
   useActionState,
   useCallback,
+  // useCallback,
 } from "react";
 import Modal from "../../../shared/components/organisms/Modal";
 import Form from "../../../shared/components/molecules/Form";
@@ -18,7 +19,7 @@ import { validateEmployeeData } from "../utils/createEmployeeValidation";
 import { IEmployeePayload } from "../types/employees";
 import { calculateAge } from "../../../shared/utils/calculateAge";
 import { calculateExperience } from "../../../shared/utils/calculateExperience";
-import SkillsInputSection from "./SkillsInputSection";
+import MultipleSkillInput from "./MultipleSkillInput";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
@@ -43,7 +44,6 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
     k1: "",
     k2: "",
   });
-  // console.log("🚀 ~ CreateEmployee ~ formData:", formData);
 
   // Handler untuk input text
   function handleTextInputChange(
@@ -73,12 +73,12 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
     }));
   }
 
-  const handleSkillSelected = useCallback((count: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      k1: String(count * 7.5),
-    }));
-  }, []);
+  // const handleSkillSelected = useCallback((count: number) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     k1: String(count * 7.5),
+  //   }));
+  // }, []);
 
   async function handleAddEmployee() {
     const validationErrors = validateEmployeeData(formData);
@@ -141,6 +141,17 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
     handleResetForm();
     onClose();
   }
+
+  const handleMultipleSkillInput = useCallback((skills: string[]) => {
+    const totalSkillValue = skills
+      .map(() => 1 * 10)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    setFormData((prev) => ({
+      ...prev,
+      k1: String(totalSkillValue),
+    }));
+  }, []);
 
   const { formAttr, submitAttr } = createEmployeeAttributes;
   formAttr.action = formAction;
@@ -318,7 +329,7 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
               </Label>
               <Label
                 labelType="form-control"
-                leftLabel="Lama Bekerja"
+                leftLabel="Mulai Bekerja"
                 bottomLeftLabel={ErrorMessageRendered(
                   formState.errors?.experience as string
                 )}
@@ -352,8 +363,13 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
                   }}
                 />
               </Label>
-              <SkillsInputSection onSkillCountChange={handleSkillSelected} />
+
+              {/* <SkillsInputSection onSkillCountChange={handleSkillSelected} /> */}
             </div>
+          </div>
+          <div>
+            <h6>Keahlian</h6>
+            <MultipleSkillInput onSendSkill={handleMultipleSkillInput} />
           </div>
 
           {/* Action */}

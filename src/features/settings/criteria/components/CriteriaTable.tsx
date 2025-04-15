@@ -1,16 +1,15 @@
-import List from "../../../../shared/components/atoms/List";
-import Dropdown from "../../../../shared/components/molecules/Dropdown";
 import Table from "../../../../shared/components/organisms/Table";
+import { formatString } from "../../../../shared/utils/stringFormatter";
 import { ICriteriaDatas } from "../types/criteria";
-import Button from "../../../../shared/components/atoms/Button";
+
 import { memo } from "react";
 
 interface IProps {
   criteriaData: ICriteriaDatas[];
-  tableAction: (id: number, type: "EDIT" | "DESTROY") => void;
+  tableAction?: (id: number, type: "EDIT" | "DESTROY") => void;
 }
 
-function CriteriaTable({ criteriaData, tableAction }: IProps) {
+function CriteriaTable({ criteriaData }: IProps) {
   const defaultTableHead = (
     <tr>
       <th>No</th>
@@ -19,7 +18,7 @@ function CriteriaTable({ criteriaData, tableAction }: IProps) {
       <th>Bobot</th>
       <th>Jenis</th>
       <th>Tingkat Prioritas</th>
-      <th>Aksi</th>
+      {/* <th>Aksi</th> */}
     </tr>
   );
 
@@ -32,9 +31,9 @@ function CriteriaTable({ criteriaData, tableAction }: IProps) {
             <td>{item.code}</td>
             <td>{item.name}</td>
             <td>{item.weight}</td>
-            <td>{item.type}</td>
+            <td>{formatString(item.type || "", "capitalize")}</td>
             <td>{item.rank_order}</td>
-            <th>
+            {/* <th>
               <Dropdown>
                 <List>
                   <Button
@@ -56,7 +55,7 @@ function CriteriaTable({ criteriaData, tableAction }: IProps) {
                   </Button>
                 </List>
               </Dropdown>
-            </th>
+            </th> */}
           </tr>
         ))}
       </Table>

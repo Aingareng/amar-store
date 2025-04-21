@@ -18,12 +18,12 @@ export default function useSkillCriteria(params?: ISkillQueryParams) {
     isPending,
     isFetching,
   } = useQuery({
-    queryKey: ["skill-critria", params],
+    queryKey: ["skill-criteria", params],
     queryFn: () => (params ? get(params) : get()),
   });
 
   const createMutation = useMutation({
-    mutationFn: (payload: ISkillPayload) => create(payload),
+    mutationFn: async (payload: ISkillPayload) => await create(payload),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["skill-criteria"] }),
   });

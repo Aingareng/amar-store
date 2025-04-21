@@ -22,7 +22,7 @@ export default function useLeaderhip(params?: ILeadershipQueryParams) {
     isPending,
     isFetching,
   } = useQuery({
-    queryKey: ["skill-critria", params],
+    queryKey: ["skill-criteria", params],
     queryFn: () => (params ? get(params) : get()),
   });
   const createMutation = useMutation({

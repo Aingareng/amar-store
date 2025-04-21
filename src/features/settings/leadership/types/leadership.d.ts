@@ -1,6 +1,6 @@
 export interface ILeadershipTableData {
   id: number;
-  skill_name: string;
+  name: string;
   weight: number;
 }
 

@@ -1,41 +1,93 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Button from "../../../../shared/components/atoms/Button";
-import { ChangeEvent, useState } from "react";
-import TableFilter, {
-  FilterValues,
-} from "../../../../shared/components/organisms/TableFilter";
+import { useCallback, useRef, useState } from "react";
+import { FilterValues } from "../../../../shared/components/organisms/TableFilter";
 import Table from "../../../../shared/components/organisms/Table";
 import { ILeadershipTableData } from "../../../../features/settings/leadership/types/leadership";
+import LeadershipCriteriaFilter from "../../../../features/settings/leadership/components/LeadershipCriteriaFilter";
+import useLeaderhip from "../../../../features/settings/leadership/hooks/useLeaderhip";
+import { formatString } from "../../../../shared/utils/stringFormatter";
+import Dropdown from "../../../../shared/components/molecules/Dropdown";
+import List from "../../../../shared/components/atoms/List";
+import { useToast } from "../../../../shared/hooks/useToast";
+import InsertUpdateLeadershipModal from "../../../../features/settings/leadership/components/InsertUpdateLeadershipModal";
 
 export default function LeadershipPage() {
   const [enteredValues, setEnteredValues] = useState<FilterValues>({
     search: "",
   });
+  const { Toast, showToast } = useToast();
+  const [itemId, setItemId] = useState<number | null>(null);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
 
-  function handleSubmitFilter(filterValue: FilterValues) {
-    console.log(filterValue);
+  const { criterias, destroyLeadership } = useLeaderhip({
+    search: enteredValues.search || "",
+  });
+
+  let tableBodyContent: ILeadershipTableData[] = [];
+
+  if (criterias && criterias.data.length > 0) {
+    tableBodyContent = criterias.data;
   }
 
-  function handleResetFilter() {
-    setEnteredValues({
-      search: "",
-    });
+  function handleAddCriteria() {
+    setItemId(null);
+    dialogRef.current?.showModal();
   }
 
-  const tableBodyContent: ILeadershipTableData[] = [
-    {
-      id: 1,
-      skill_name: "Disiplin",
-      weight: 100,
+  async function handleTableAction(id: number, type: "EDIT" | "DESTROY") {
+    setItemId(id);
+    if (type === "DESTROY") {
+      const result = await destroyLeadership(id);
+      if (result.status === 201) {
+        showToast({
+          type: result.status === 201 ? "success" : "error",
+          message:
+            result.status === 201
+              ? "Berhasil menghapus keahlian"
+              : "Berhasil menghapus keahlian",
+        });
+      }
+    }
+
+    if (type === "EDIT") {
+      dialogRef.current?.showModal();
+    }
+  }
+
+  const handleSendingStatus = useCallback(
+    (statusCode: number | undefined) => {
+      if (statusCode) {
+        showToast({
+          type: statusCode === 201 ? "success" : "error",
+          message:
+            statusCode === 201
+              ? "Berhasil menambah keahlian"
+              : "Berhasil menambah keahlian",
+        });
+      }
+
+      if (statusCode && itemId) {
+        showToast({
+          type: statusCode === 201 ? "success" : "error",
+          message:
+            statusCode === 201
+              ? "Berhasil mengubah keahlian"
+              : "Berhasil mengubah keahlian",
+        });
+      }
+
+      if (statusCode === 201) {
+        dialogRef.current?.close();
+      }
     },
-  ];
-
-  function handleAddCriteria() {}
+    [itemId]
+  );
 
   const tableHeadContent = (
     <tr>
       <th>No</th>
-      <th>Nama Keahlian</th>
+      <th>Nama Kriteria</th>
       <th>Bobot</th>
       <th>Aksi</th>
     </tr>
@@ -43,6 +95,7 @@ export default function LeadershipPage() {
 
   return (
     <div className="grid grid-cols-1 gap-5">
+      <Toast />
       <header className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Daftar Jiwa kepemimpinan</h1>
         <Button
@@ -57,37 +110,55 @@ export default function LeadershipPage() {
         </Button>
       </header>
       <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
-        <TableFilter
-          onSubmit={handleSubmitFilter}
-          onReset={handleResetFilter}
-          className="grid grid-cols-[310px_310px_1fr] items-end gap-2"
-          searchInput={{
-            useSearchInput: true,
-            label: "Cari Keahlian",
-            placeholder: "Masukan nama keahlian",
-            value: enteredValues.search || "",
-            onChange: (event: ChangeEvent<HTMLInputElement>) => {
-              setEnteredValues((prev) => {
-                return {
-                  ...prev,
-                  search: event.target.value,
-                };
-              });
-            },
-          }}
+        <LeadershipCriteriaFilter
+          filterResults={(result) => setEnteredValues(result)}
         />
 
         <Table tableHead={tableHeadContent}>
           {tableBodyContent.map((item, idx) => (
             <tr key={item.id}>
               <th>{idx + 1}</th>
-              <td>{item.skill_name}</td>
+              <td>{formatString(item.name, "capitalize")}</td>
               <td>{item.weight}</td>
-              <td>Aksi</td>
+              <th>
+                <Dropdown>
+                  <List>
+                    <Button
+                      attributes={{
+                        className: "cursor-pointer",
+                        onClick: () =>
+                          handleTableAction(item.id as number, "EDIT"),
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </List>
+                  <List>
+                    <Button
+                      attributes={{
+                        onClick: () =>
+                          handleTableAction(item.id as number, "DESTROY"),
+                      }}
+                    >
+                      Hapus
+                    </Button>
+                  </List>
+                </Dropdown>
+              </th>
             </tr>
           ))}
         </Table>
       </main>
+
+      <InsertUpdateLeadershipModal
+        ref={dialogRef}
+        type={itemId ? "UPDATE" : "CREATE"}
+        id={itemId as number}
+        initialData={
+          itemId ? tableBodyContent.find((item) => item.id === itemId) : null
+        }
+        onSendingStatus={handleSendingStatus}
+      />
     </div>
   );
 }

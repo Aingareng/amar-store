@@ -10,6 +10,7 @@ export interface ISkillQueryParams {
 }
 
 export interface ISkillPayload {
+  id?: number;
   name: string;
   weight: number;
 }

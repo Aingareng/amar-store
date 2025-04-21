@@ -159,7 +159,7 @@ export default function TableFilter({
         <Button
           attributes={{
             type: "reset",
-            className: "btn btn-primary btn-square",
+            className: "btn btn-primary btn-square btn-outline",
             onClick: onReset,
           }}
         >

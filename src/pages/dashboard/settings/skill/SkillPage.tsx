@@ -1,26 +1,27 @@
-import { ChangeEvent, useState } from "react";
-import TableFilter, {
-  FilterValues,
-} from "../../../../shared/components/organisms/TableFilter";
+import { useCallback, useRef, useState } from "react";
+import { FilterValues } from "../../../../shared/components/organisms/TableFilter";
 import Table from "../../../../shared/components/organisms/Table";
 import { ISkillTableData } from "../../../../features/settings/skill/types/skill";
 import Button from "../../../../shared/components/atoms/Button";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import useSkillCriteria from "../../../../features/settings/skill/hooks/useSkillCriteria";
+import { formatString } from "../../../../shared/utils/stringFormatter";
+import Dropdown from "../../../../shared/components/molecules/Dropdown";
+import List from "../../../../shared/components/atoms/List";
+import InsertUpdateModal from "../../../../features/settings/skill/components/InsertUpdateModal";
+import { useToast } from "../../../../shared/hooks/useToast";
+import SkillCriteriaFilter from "../../../../features/settings/skill/components/SkillCriteriaFilter";
 
 export default function SkillPage() {
-  const [enteredValues, setEnteredValues] = useState<FilterValues>({
-    search: "",
+  const { Toast, showToast } = useToast();
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const [itemId, setItemId] = useState<number | null>(null);
+
+  const [filterValue, setFilterValue] = useState<FilterValues>();
+
+  const { skillCriterias, destroySkillCriteria } = useSkillCriteria({
+    search: filterValue?.search || "",
   });
-
-  function handleSubmitFilter(filterValue: FilterValues) {
-    console.log(filterValue);
-  }
-
-  function handleResetFilter() {
-    setEnteredValues({
-      search: "",
-    });
-  }
 
   const tableHeadContent = (
     <tr>
@@ -31,18 +32,69 @@ export default function SkillPage() {
     </tr>
   );
 
-  const tableBodyContent: ISkillTableData[] = [
-    {
-      id: 1,
-      name: "Microsoft Word",
-      weight: 100,
-    },
-  ];
+  let tableBodyContent: ISkillTableData[] = [];
 
-  function handleAddSkill() {}
+  if (skillCriterias && skillCriterias.data.length > 0) {
+    tableBodyContent = skillCriterias.data;
+  }
+
+  function handleAddSkill() {
+    setItemId(null);
+    dialogRef.current?.showModal();
+  }
+
+  async function handleTableAction(id: number, type: "EDIT" | "DESTROY") {
+    setItemId(id);
+    if (type === "DESTROY") {
+      const result = await destroySkillCriteria(id);
+      if (result.status === 201) {
+        showToast({
+          type: result.status === 201 ? "success" : "error",
+          message:
+            result.status === 201
+              ? "Berhasil menghapus keahlian"
+              : "Berhasil menghapus keahlian",
+        });
+      }
+    }
+
+    if (type === "EDIT") {
+      dialogRef.current?.showModal();
+    }
+  }
+
+  const handleSendingStatus = useCallback(
+    (statusCode: number | undefined) => {
+      if (statusCode) {
+        showToast({
+          type: statusCode === 201 ? "success" : "error",
+          message:
+            statusCode === 201
+              ? "Berhasil menambah keahlian"
+              : "Berhasil menambah keahlian",
+        });
+      }
+
+      if (statusCode && itemId) {
+        showToast({
+          type: statusCode === 201 ? "success" : "error",
+          message:
+            statusCode === 201
+              ? "Berhasil mengubah keahlian"
+              : "Berhasil mengubah keahlian",
+        });
+      }
+
+      if (statusCode === 201) {
+        dialogRef.current?.close();
+      }
+    },
+    [itemId]
+  );
 
   return (
     <div className="grid grid-cols-1 gap-5">
+      <Toast />
       <header className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Daftar Keahlian</h1>
         <Button
@@ -57,37 +109,54 @@ export default function SkillPage() {
         </Button>
       </header>
       <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
-        <TableFilter
-          onSubmit={handleSubmitFilter}
-          onReset={handleResetFilter}
-          className="grid grid-cols-[310px_310px_1fr] items-end gap-2"
-          searchInput={{
-            useSearchInput: true,
-            label: "Cari Keahlian",
-            placeholder: "Masukan nama keahlian",
-            value: enteredValues.search || "",
-            onChange: (event: ChangeEvent<HTMLInputElement>) => {
-              setEnteredValues((prev) => {
-                return {
-                  ...prev,
-                  search: event.target.value,
-                };
-              });
-            },
-          }}
+        <SkillCriteriaFilter
+          filterResults={(result) => setFilterValue(result)}
         />
-
         <Table tableHead={tableHeadContent}>
           {tableBodyContent.map((item, idx) => (
             <tr key={item.id}>
               <th>{idx + 1}</th>
-              <td>{item.name}</td>
+              <td>{formatString(item.name, "capitalize")}</td>
               <td>{item.weight}</td>
-              <td>Aksi</td>
+              <th>
+                <Dropdown>
+                  <List>
+                    <Button
+                      attributes={{
+                        className: "cursor-pointer",
+                        onClick: () =>
+                          handleTableAction(item.id as number, "EDIT"),
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </List>
+                  <List>
+                    <Button
+                      attributes={{
+                        onClick: () =>
+                          handleTableAction(item.id as number, "DESTROY"),
+                      }}
+                    >
+                      Hapus
+                    </Button>
+                  </List>
+                </Dropdown>
+              </th>
             </tr>
           ))}
         </Table>
       </main>
+
+      <InsertUpdateModal
+        ref={dialogRef}
+        type={itemId ? "UPDATE" : "CREATE"}
+        id={itemId as number}
+        initialData={
+          itemId ? tableBodyContent.find((item) => item.id === itemId) : null
+        }
+        onSendingStatus={handleSendingStatus}
+      />
     </div>
   );
 }

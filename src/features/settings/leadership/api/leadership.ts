@@ -9,7 +9,7 @@ import {
 const PREFIX_ROUTE = "/leadership-cirteria";
 
 export const get = async (params?: ILeadershipQueryParams) =>
-  await api.get<IApiResponse<ILeadershipTableData>>(PREFIX_ROUTE, {
+  await api.get<IApiResponse<ILeadershipTableData[]>>(PREFIX_ROUTE, {
     ...params,
   });
 
@@ -20,4 +20,4 @@ export const update = async (id: number, payload: ILeadershipPayload) =>
   await api.put<IApiResponse<null>>(`${PREFIX_ROUTE}/${id}`, payload);
 
 export const destroy = async (id: number) =>
-  await api.delete(PREFIX_ROUTE, { id: id.toString() });
+  await api.delete<IApiResponse<null>>(`${PREFIX_ROUTE}/${id}`);

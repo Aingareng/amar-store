@@ -9,7 +9,7 @@ import {
 const PREFFIX_ROUTE = "/skill-criteria";
 
 const get = async (params?: ISkillQueryParams) =>
-  api.get<IApiResponse<ISkillTableData>>(PREFFIX_ROUTE, {
+  await api.get<IApiResponse<ISkillTableData[]>>(PREFFIX_ROUTE, {
     ...params,
   });
 
@@ -20,6 +20,6 @@ const update = async (id: number, payload: ISkillPayload) =>
   await api.put<IApiResponse<null>>(`${PREFFIX_ROUTE}/${id}`, payload);
 
 const destroy = async (id: number) =>
-  await api.delete(PREFFIX_ROUTE, { id: id.toString() });
+  await api.delete<IApiResponse<null>>(`${PREFFIX_ROUTE}/${id}`);
 
 export { get, create, update, destroy };

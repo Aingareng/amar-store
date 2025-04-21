@@ -62,6 +62,14 @@ export default function Navbar() {
                   <List>
                     <Link to="/setting/criteria">Daftar Kriteria</Link>
                   </List>
+                  <List>
+                    <Link to="/setting/skills">Daftar Keahlian</Link>
+                  </List>
+                  <List>
+                    <Link to="/setting/leadership">
+                      Daftar Jiwa kepemimpinan
+                    </Link>
+                  </List>
                 </ul>
               </Submenu>
             </List>

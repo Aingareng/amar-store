@@ -39,13 +39,14 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
-      throw new Error(
-        JSON.stringify({
-          status: response.status,
-          statusText: response.statusText,
-          error: errorData,
-        })
-      );
+      return errorData;
+      // throw new Error(
+      //   JSON.stringify({
+      //     status: response.status,
+      //     statusText: response.statusText,
+      //     error: errorData,
+      //   })
+      // );
     }
 
     return await response.json();
@@ -100,16 +101,10 @@ export class ApiClient {
       ? "?" + new URLSearchParams(params).toString()
       : "";
 
-    // console.log("🚀 ~ ApiClient ~ queryString:", queryString);
-    // console.log("🚀 ~ ApiClient ~ data:", data);
-    // console.log("🚀 ~ ApiClient ~ option:", option);
-
     return await this.request<ResponseType>(`${endpoint}${queryString}`, {
       ...option,
       method: "PUT",
       body: JSON.stringify(data),
     });
   };
-
-  // Tambahkan method lain seperti put, delete, dll
 }

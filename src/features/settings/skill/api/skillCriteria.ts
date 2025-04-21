@@ -19,6 +19,7 @@ const create = async (payload: ISkillPayload) =>
 const update = async (id: number, payload: ISkillPayload) =>
   await api.put<IApiResponse<null>>(`${PREFFIX_ROUTE}/${id}`, payload);
 
-const destroy = async (id: number) => await api.delete(id.toString());
+const destroy = async (id: number) =>
+  await api.delete(PREFFIX_ROUTE, { id: id.toString() });
 
 export { get, create, update, destroy };

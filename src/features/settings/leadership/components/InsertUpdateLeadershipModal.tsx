@@ -89,28 +89,45 @@ function InsertUpdateLeadershipModal({
     const existSkillCriteria =
       localStorageUtils.get<ILeadershipTableData[]>("leadershipCriteria") || [];
 
-    if (existSkillCriteria && existSkillCriteria.length > 0) {
-      const totalWeight = existSkillCriteria.reduce(
-        (prev, current) => prev + current.weight,
-        0
-      );
-
-      if (totalWeight + +weight > 100) {
-        return {
-          errors: {
-            name: "Bobot tidak bisa lebih dari 100",
-            weight: "Bobot tidak bisa lebih dari 100",
-          },
-          payload: { name, weight: +weight },
-        };
-      }
-    }
-
     if (type === "CREATE") {
+      if (existSkillCriteria && existSkillCriteria.length > 0) {
+        const totalWeight = existSkillCriteria.reduce(
+          (prev, current) => prev + current.weight,
+          0
+        );
+
+        if (totalWeight + +weight > 100) {
+          return {
+            errors: {
+              name: "Bobot tidak bisa lebih dari 100",
+              weight: "Bobot tidak bisa lebih dari 100",
+            },
+            payload: { name, weight: +weight },
+          };
+        }
+      }
       const result = await createLeadership({ name, weight: +weight });
       onSendingStatus(result.status);
     }
     if (type === "UPDATE" && id) {
+      const existSkill = existSkillCriteria?.filter((item) => item.id !== id);
+      if (existSkill && existSkill.length > 0) {
+        const totalWeight = existSkill.reduce(
+          (prev, current) => prev + current.weight,
+          0
+        );
+
+        if (totalWeight + +weight > 100) {
+          return {
+            errors: {
+              name: "Bobot tidak bisa lebih dari 100",
+              weight: "Bobot tidak bisa lebih dari 100",
+            },
+            payload: { name, weight: +weight },
+          };
+        }
+      }
+
       const result = await updateLeadership({
         id,
         payload: { name, weight: +weight },

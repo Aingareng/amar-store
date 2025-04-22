@@ -5,7 +5,7 @@ import EmployeeDetails from "../pages/dashboard/employee-details/EmployeeDetails
 import DashboardLayout from "../pages/dashboard/layout";
 import CriteriaPage from "../pages/dashboard/settings/criteria/CriteriaPage";
 import SkillPage from "../pages/dashboard/settings/skill/SkillPage";
-import LeadershipPage from "../pages/dashboard/settings/leadership/leaderhipPage";
+import LeadershipPage from "../pages/dashboard/settings/leadership/LeaderhipPage";
 
 export default function Router() {
   return (

@@ -87,7 +87,7 @@ export default function Employees() {
               <td>{item.score}</td>
 
               <th>
-                <Dropdown itemIndex={item.id} onAction={handleDestroyEmployee}>
+                <Dropdown onAction={handleDestroyEmployee}>
                   <List>
                     <Link to={`/employee-details/${item.id}`}>Detail</Link>
                   </List>

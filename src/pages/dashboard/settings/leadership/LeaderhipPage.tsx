@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Button from "../../../../shared/components/atoms/Button";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FilterValues } from "../../../../shared/components/organisms/TableFilter";
 import Table from "../../../../shared/components/organisms/Table";
 import { ILeadershipTableData } from "../../../../features/settings/leadership/types/leadership";
@@ -19,6 +19,7 @@ export default function LeadershipPage() {
   const { Toast, showToast } = useToast();
   const [itemId, setItemId] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const [disableAddButton, setDisableAddButton] = useState<boolean>(false);
 
   const { criterias, destroyLeadership } = useLeaderhip({
     search: enteredValues.search || "",
@@ -31,6 +32,15 @@ export default function LeadershipPage() {
   }
 
   function handleAddCriteria() {
+    if (disableAddButton) {
+      showToast({
+        type: "warning",
+        message: "Bobot tidak bisa lebih dari 100",
+      });
+
+      return;
+    }
+
     setItemId(null);
     dialogRef.current?.showModal();
   }
@@ -83,6 +93,20 @@ export default function LeadershipPage() {
     },
     [itemId]
   );
+
+  useEffect(() => {
+    if (criterias && criterias.data.length > 0) {
+      const totalWeight = criterias.data.reduce(
+        (prev, current) => prev + current.weight,
+        0
+      );
+      if (totalWeight >= 100) {
+        setDisableAddButton(true);
+      } else {
+        setDisableAddButton(false);
+      }
+    }
+  }, [criterias]);
 
   const tableHeadContent = (
     <tr>

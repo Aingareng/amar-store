@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FilterValues } from "../../../../shared/components/organisms/TableFilter";
 import Table from "../../../../shared/components/organisms/Table";
 import { ISkillTableData } from "../../../../features/settings/skill/types/skill";
@@ -11,11 +11,13 @@ import List from "../../../../shared/components/atoms/List";
 import InsertUpdateModal from "../../../../features/settings/skill/components/InsertUpdateModal";
 import { useToast } from "../../../../shared/hooks/useToast";
 import SkillCriteriaFilter from "../../../../features/settings/skill/components/SkillCriteriaFilter";
+import localStorageUtils from "../../../../shared/utils/localStorage";
 
 export default function SkillPage() {
   const { Toast, showToast } = useToast();
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [itemId, setItemId] = useState<number | null>(null);
+  const [disableAddButton, setDisableAddButton] = useState<boolean>(false);
 
   const [filterValue, setFilterValue] = useState<FilterValues>();
 
@@ -39,6 +41,20 @@ export default function SkillPage() {
   }
 
   function handleAddSkill() {
+    if (disableAddButton) {
+      showToast({
+        type: "warning",
+        message: "Bobot tidak bisa lebih dari 100",
+      });
+
+      return;
+    }
+
+    localStorageUtils.set<ISkillTableData[]>(
+      "skillCriteria",
+      skillCriterias?.data || []
+    );
+
     setItemId(null);
     dialogRef.current?.showModal();
   }
@@ -92,6 +108,20 @@ export default function SkillPage() {
     [itemId]
   );
 
+  useEffect(() => {
+    if (skillCriterias && skillCriterias.data.length > 0) {
+      const totalWeight = skillCriterias.data.reduce(
+        (prev, current) => prev + current.weight,
+        0
+      );
+      if (totalWeight >= 100) {
+        setDisableAddButton(true);
+      } else {
+        setDisableAddButton(false);
+      }
+    }
+  }, [skillCriterias]);
+
   return (
     <div className="grid grid-cols-1 gap-5">
       <Toast />
@@ -102,6 +132,7 @@ export default function SkillPage() {
             type: "button",
             className: "btn btn-primary w-max",
             onClick: handleAddSkill,
+            // disabled: disableAddButton,
           }}
         >
           <Icon icon="material-symbols:add-2-rounded" width="24" height="24" />

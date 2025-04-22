@@ -11,8 +11,8 @@ export default function Checkbox({ label, inputAttr }: IProps) {
   return (
     <div className="form-control">
       <label className="cursor-pointer label ">
-        {label && <span className="label-text text-xs">{label}</span>}
-        <Input attributes={inputAttr} />
+        {label && <span className="label-text text-sm">{label}</span>}
+        <Input attributes={{ ...inputAttr, type: "checkbox" }} />
       </label>
     </div>
   );

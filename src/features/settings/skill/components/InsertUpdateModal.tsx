@@ -9,6 +9,7 @@ import { z } from "zod";
 import { ZodValidateForm } from "../../../../shared/libs/ZodValidationForm";
 import { formatString } from "../../../../shared/utils/stringFormatter";
 import Button from "../../../../shared/components/atoms/Button";
+import localStorageUtils from "../../../../shared/utils/localStorage";
 
 interface IProps {
   id?: number;
@@ -81,6 +82,26 @@ function InsertUpdateModal({
           weight: +weight,
         },
       };
+    }
+
+    const existSkillCriteria =
+      localStorageUtils.get<ISkillTableData[]>("skillCriteria");
+
+    if (existSkillCriteria && existSkillCriteria.length > 0) {
+      const totalWeight = existSkillCriteria.reduce(
+        (prev, current) => prev + current.weight,
+        0
+      );
+
+      if (totalWeight + +weight > 100) {
+        return {
+          errors: {
+            name: "Bobot tidak bisa lebih dari 100",
+            weight: "Bobot tidak bisa lebih dari 100",
+          },
+          payload: { name, weight: +weight },
+        };
+      }
     }
 
     if (type === "CREATE") {

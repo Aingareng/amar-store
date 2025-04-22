@@ -19,7 +19,9 @@ import { validateEmployeeData } from "../utils/createEmployeeValidation";
 import { IEmployeePayload } from "../types/employees";
 import { calculateAge } from "../../../shared/utils/calculateAge";
 import { calculateExperience } from "../../../shared/utils/calculateExperience";
-import MultipleSkillInput from "./MultipleSkillInput";
+// import MultipleSkillInput from "./MultipleSkillInput";
+import useSkillCriteria from "../../settings/skill/hooks/useSkillCriteria";
+import SkillsInputSection from "./SkillsInputSection";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
@@ -29,6 +31,7 @@ interface IProps {
 
 export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
   const { createEmployee } = useEmployees();
+  const { skillCriterias } = useSkillCriteria();
 
   // State untuk form inputs
   const [formData, setFormData] = useState<IEmployeePayload>({
@@ -73,12 +76,13 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
     }));
   }
 
-  // const handleSkillSelected = useCallback((count: number) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     k1: String(count * 7.5),
-  //   }));
-  // }, []);
+  const handleSkillSelected = useCallback((count: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      k1: count.toString(),
+      // String(count * 7.5),
+    }));
+  }, []);
 
   async function handleAddEmployee() {
     const validationErrors = validateEmployeeData(formData);
@@ -142,26 +146,26 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
     onClose();
   }
 
-  const handleMultipleSkillInput = useCallback((skills: string[]) => {
-    const totalSkillValue = skills
-      .map(() => 1 * 10)
-      .reduce((acc, curr) => acc + curr, 0);
+  // const handleMultipleSkillInput = useCallback((skills: string[]) => {
+  //   const totalSkillValue = skills
+  //     .map(() => 1 * 10)
+  //     .reduce((acc, curr) => acc + curr, 0);
 
-    setFormData((prev) => ({
-      ...prev,
-      k1: String(totalSkillValue),
-    }));
-  }, []);
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     k1: String(totalSkillValue),
+  //   }));
+  // }, []);
 
   const { formAttr, submitAttr } = createEmployeeAttributes;
   formAttr.action = formAction;
 
   return (
-    <Modal ref={ref}>
+    <Modal ref={ref} width="w-11/12 max-w-5xl">
       <div className="grid grid-cols-1 gap-5 ">
-        <h3 className="text-center text-xl">Tambah Pegawai</h3>
+        <h3 className="text-center text-2xl font-bold">Tambah Pegawai</h3>
         <Form attributes={formAttr}>
-          <main className="grid grid-cols-2 gap-2">
+          <main className="grid grid-cols-4 gap-2">
             <Label
               labelType="form-control"
               leftLabel="Nama Lengkap"
@@ -285,7 +289,9 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
 
           {/* Kriteria */}
           <div className="flex w-full flex-col">
-            <div className="divider divider-start">Kriteria</div>
+            <h2 className="divider divider-start text-xl font-semibold">
+              Kriteria
+            </h2>
             <div className="grid grid-cols-2 gap-2">
               <Label
                 labelType="form-control"
@@ -344,7 +350,7 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
                   }}
                 />
               </Label>
-              <Label
+              {/* <Label
                 labelType="form-control"
                 leftLabel="Jiwa Kepemimpinan"
                 bottomLeftLabel={ErrorMessageRendered(
@@ -362,15 +368,19 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
                     onChange: (e) => handleTextInputChange("k5", e),
                   }}
                 />
-              </Label>
+              </Label> */}
 
-              {/* <SkillsInputSection onSkillCountChange={handleSkillSelected} /> */}
+              <SkillsInputSection
+                onSkillCountChange={handleSkillSelected}
+                criterias={skillCriterias?.data || []}
+              />
             </div>
           </div>
-          <div>
-            <h6>Keahlian</h6>
+
+          {/* <div>
+            <h4 className="text-md">Keahlian</h4>
             <MultipleSkillInput onSendSkill={handleMultipleSkillInput} />
-          </div>
+          </div> */}
 
           {/* Action */}
           <footer className="flex justify-end gap-2 mt-3">

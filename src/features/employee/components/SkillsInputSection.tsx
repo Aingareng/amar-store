@@ -1,50 +1,25 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import Checkbox from "../../../shared/components/molecules/Checkbox";
-import {
-  // checkBoxInputAttibutes,
-  getCheckBoxAttributes,
-} from "../../../types/inputAttributes";
+import // checkBoxInputAttibutes,
+// getCheckBoxAttributes,
+"../../../types/inputAttributes";
+import { ISkillTableData } from "../../settings/skill/types/skill";
+import { formatString } from "../../../shared/utils/stringFormatter";
 
 interface IProps {
   onSkillCountChange: (count: number) => void;
+  criterias: ISkillTableData[];
 }
 
-export default function SkillsInputSection({ onSkillCountChange }: IProps) {
-  const [enteredValue, setEnteredValue] = useState<Record<string, boolean>>();
-
-  const msWordInput = {
-    ...getCheckBoxAttributes({
-      name: "ms_word",
-      className: "checkbox checkbox-primary checkbox-xs ml-2",
-      onChange: (event) => handleSkillChange(event),
-    }),
-  };
-
-  const msExcelInput = {
-    ...getCheckBoxAttributes({
-      name: "ms_excel",
-      className: "checkbox checkbox-primary checkbox-xs ml-2",
-      onChange: (event) => handleSkillChange(event),
-    }),
-  };
-
-  const msPowerPointInput = {
-    ...getCheckBoxAttributes({
-      name: "ms_powerpoint",
-      className: "checkbox checkbox-primary checkbox-xs ml-2",
-      onChange: (event) => handleSkillChange(event),
-    }),
-  };
-  const msAcessInput = {
-    ...getCheckBoxAttributes({
-      name: "ms_access",
-      className: "checkbox checkbox-primary checkbox-xs ml-2",
-      onChange: (event) => handleSkillChange(event),
-    }),
-  };
+export default function SkillsInputSection({
+  criterias,
+  onSkillCountChange,
+}: IProps) {
+  const [enteredValue, setEnteredValue] = useState<Record<string, boolean>>({});
 
   // Handler untuk checkbox
   function handleSkillChange(event: ChangeEvent<HTMLInputElement>) {
+    if (!event.target.name) return;
     setEnteredValue((prev) => {
       return {
         ...prev,
@@ -52,22 +27,35 @@ export default function SkillsInputSection({ onSkillCountChange }: IProps) {
       };
     });
   }
-  const countTrue = Object.entries(enteredValue ?? {}).filter(
-    ([, value]) => value === true
-  ).length;
-
   useEffect(() => {
-    onSkillCountChange(countTrue);
-  }, [countTrue, onSkillCountChange]);
+    const totalWeight = criterias.reduce((acc, item) => {
+      const nameKey = formatString(item.name, "lowercase");
+      if (enteredValue[nameKey]) {
+        return acc + item.weight;
+      }
+      return acc;
+    }, 0);
+
+    onSkillCountChange(totalWeight);
+  }, [enteredValue, criterias, onSkillCountChange]);
 
   return (
     <div className="grid grid-cols-1 col-span-2 ">
-      <p className="text-[0.875rem]">Keahlian</p>
+      <h3 className="text-[0.875rem]">Keahlian</h3>
       <section className="grid grid-cols-2 gap-1">
-        <Checkbox label="Microsoft Word" inputAttr={msWordInput} />
-        <Checkbox label="Microsoft Excel" inputAttr={msExcelInput} />
-        <Checkbox label="Microsoft PowerPoint" inputAttr={msPowerPointInput} />
-        <Checkbox label="Microsoft Access" inputAttr={msAcessInput} />
+        {criterias.map((checkboxContent) => (
+          <Checkbox
+            key={checkboxContent.id}
+            label={formatString(checkboxContent.name, "capitalize")}
+            inputAttr={{
+              "aria-label": `checkbox ${checkboxContent.name}`,
+              name: formatString(checkboxContent.name, "lowercase"),
+              className: "checkbox checkbox-primary",
+              value: checkboxContent.weight,
+              onChange: (event) => handleSkillChange(event),
+            }}
+          />
+        ))}
       </section>
     </div>
   );

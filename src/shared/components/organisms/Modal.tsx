@@ -6,9 +6,10 @@ import { ForwardedRef, ReactNode } from "react";
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
   children: ReactNode;
+  width?: string;
 }
 
-export default function Modal({ ref, children }: IProps) {
+export default function Modal({ ref, width, children }: IProps) {
   const modalRoot = document.getElementById("modal") as HTMLDialogElement;
 
   const defaultContent = (
@@ -19,7 +20,7 @@ export default function Modal({ ref, children }: IProps) {
   );
   return createPortal(
     <dialog ref={ref} className="modal">
-      <div className="modal-box sm:modal-middle">
+      <div className={`modal-box sm:modal-middle ${width}`}>
         <form method="dialog">
           {/* if there is a button in form, it will close the modal */}
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">

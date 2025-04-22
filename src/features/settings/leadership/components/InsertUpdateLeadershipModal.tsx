@@ -87,7 +87,7 @@ function InsertUpdateLeadershipModal({
     }
 
     const existSkillCriteria =
-      localStorageUtils.get<ILeadershipTableData[]>("skillCriteria");
+      localStorageUtils.get<ILeadershipTableData[]>("leadershipCriteria") || [];
 
     if (existSkillCriteria && existSkillCriteria.length > 0) {
       const totalWeight = existSkillCriteria.reduce(

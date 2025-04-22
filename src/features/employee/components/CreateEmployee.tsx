@@ -22,6 +22,7 @@ import { calculateExperience } from "../../../shared/utils/calculateExperience";
 // import MultipleSkillInput from "./MultipleSkillInput";
 import useSkillCriteria from "../../settings/skill/hooks/useSkillCriteria";
 import SkillsInputSection from "./SkillsInputSection";
+import useLeaderhip from "../../settings/leadership/hooks/useLeaderhip";
 
 interface IProps {
   ref: ForwardedRef<HTMLDialogElement>;
@@ -32,6 +33,7 @@ interface IProps {
 export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
   const { createEmployee } = useEmployees();
   const { skillCriterias } = useSkillCriteria();
+  const { criterias } = useLeaderhip();
 
   // State untuk form inputs
   const [formData, setFormData] = useState<IEmployeePayload>({
@@ -76,13 +78,26 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
     }));
   }
 
-  const handleSkillSelected = useCallback((count: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      k1: count.toString(),
-      // String(count * 7.5),
-    }));
-  }, []);
+  const handleSkillSelected = useCallback(
+    (count: number, type: "k1" | "k5") => {
+      if (type === "k1") {
+        setFormData((prev) => ({
+          ...prev,
+          k1: count.toString(),
+          // String(count * 7.5),
+        }));
+      }
+
+      if (type === "k5") {
+        setFormData((prev) => ({
+          ...prev,
+          k5: count.toString(),
+          // String(count * 7.5),
+        }));
+      }
+    },
+    []
+  );
 
   async function handleAddEmployee() {
     const validationErrors = validateEmployeeData(formData);
@@ -371,8 +386,17 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
               </Label> */}
 
               <SkillsInputSection
+                type="k1"
+                label="Keahlian"
                 onSkillCountChange={handleSkillSelected}
                 criterias={skillCriterias?.data || []}
+              />
+
+              <SkillsInputSection
+                type="k5"
+                label="Jiwa Kepemimpinan"
+                onSkillCountChange={handleSkillSelected}
+                criterias={criterias?.data || []}
               />
             </div>
           </div>

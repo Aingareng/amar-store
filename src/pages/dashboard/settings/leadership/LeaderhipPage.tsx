@@ -11,6 +11,8 @@ import Dropdown from "../../../../shared/components/molecules/Dropdown";
 import List from "../../../../shared/components/atoms/List";
 import { useToast } from "../../../../shared/hooks/useToast";
 import InsertUpdateLeadershipModal from "../../../../features/settings/leadership/components/InsertUpdateLeadershipModal";
+import EmptyTableData from "../../../../shared/components/molecules/EmptyTableData";
+import localStorageUtils from "../../../../shared/utils/localStorage";
 
 export default function LeadershipPage() {
   const [enteredValues, setEnteredValues] = useState<FilterValues>({
@@ -21,7 +23,7 @@ export default function LeadershipPage() {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [disableAddButton, setDisableAddButton] = useState<boolean>(false);
 
-  const { criterias, destroyLeadership } = useLeaderhip({
+  const { criterias, isFetched, destroyLeadership } = useLeaderhip({
     search: enteredValues.search || "",
   });
 
@@ -40,6 +42,11 @@ export default function LeadershipPage() {
 
       return;
     }
+
+    localStorageUtils.set<ILeadershipTableData[]>(
+      "leadershipCriteria",
+      criterias?.data || []
+    );
 
     setItemId(null);
     dialogRef.current?.showModal();
@@ -138,40 +145,52 @@ export default function LeadershipPage() {
           filterResults={(result) => setEnteredValues(result)}
         />
 
-        <Table tableHead={tableHeadContent}>
-          {tableBodyContent.map((item, idx) => (
-            <tr key={item.id}>
-              <th>{idx + 1}</th>
-              <td>{formatString(item.name, "capitalize")}</td>
-              <td>{item.weight}</td>
-              <th>
-                <Dropdown>
-                  <List>
-                    <Button
-                      attributes={{
-                        className: "cursor-pointer",
-                        onClick: () =>
-                          handleTableAction(item.id as number, "EDIT"),
-                      }}
-                    >
-                      Edit
-                    </Button>
-                  </List>
-                  <List>
-                    <Button
-                      attributes={{
-                        onClick: () =>
-                          handleTableAction(item.id as number, "DESTROY"),
-                      }}
-                    >
-                      Hapus
-                    </Button>
-                  </List>
-                </Dropdown>
-              </th>
-            </tr>
-          ))}
-        </Table>
+        {isFetched && criterias?.data.length === 0 && (
+          <EmptyTableData
+            title="Data kriteria kosong"
+            text="Silahkan menambahkan kriteria terlebih dahulu"
+          />
+        )}
+
+        {isFetched && criterias && criterias.data.length > 0 && (
+          <Table tableHead={tableHeadContent}>
+            {tableBodyContent.map((item, idx) => (
+              <tr key={item.id}>
+                <th>{idx + 1}</th>
+                <td>{formatString(item.name, "capitalize")}</td>
+                <td>{item.weight}</td>
+                <th>
+                  <Dropdown>
+                    <List>
+                      <Button
+                        attributes={{
+                          className: "cursor-pointer",
+                          onClick: () =>
+                            handleTableAction(item.id as number, "EDIT"),
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </List>
+
+                    {tableBodyContent.length > 1 && (
+                      <List>
+                        <Button
+                          attributes={{
+                            onClick: () =>
+                              handleTableAction(item.id as number, "DESTROY"),
+                          }}
+                        >
+                          Hapus
+                        </Button>
+                      </List>
+                    )}
+                  </Dropdown>
+                </th>
+              </tr>
+            ))}
+          </Table>
+        )}
       </main>
 
       <InsertUpdateLeadershipModal

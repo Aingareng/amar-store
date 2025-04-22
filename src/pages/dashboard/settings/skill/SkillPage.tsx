@@ -12,6 +12,8 @@ import InsertUpdateModal from "../../../../features/settings/skill/components/In
 import { useToast } from "../../../../shared/hooks/useToast";
 import SkillCriteriaFilter from "../../../../features/settings/skill/components/SkillCriteriaFilter";
 import localStorageUtils from "../../../../shared/utils/localStorage";
+import EmptyTableData from "../../../../shared/components/molecules/EmptyTableData";
+import Loading from "../../../../shared/components/atoms/Loading";
 
 export default function SkillPage() {
   const { Toast, showToast } = useToast();
@@ -21,7 +23,13 @@ export default function SkillPage() {
 
   const [filterValue, setFilterValue] = useState<FilterValues>();
 
-  const { skillCriterias, destroySkillCriteria } = useSkillCriteria({
+  const {
+    skillCriterias,
+    isFetched,
+    isFetching,
+    isPending,
+    destroySkillCriteria,
+  } = useSkillCriteria({
     search: filterValue?.search || "",
   });
 
@@ -122,6 +130,10 @@ export default function SkillPage() {
     }
   }, [skillCriterias]);
 
+  if (isFetching || isPending) {
+    return <Loading />;
+  }
+
   return (
     <div className="grid grid-cols-1 gap-5">
       <Toast />
@@ -143,40 +155,52 @@ export default function SkillPage() {
         <SkillCriteriaFilter
           filterResults={(result) => setFilterValue(result)}
         />
-        <Table tableHead={tableHeadContent}>
-          {tableBodyContent.map((item, idx) => (
-            <tr key={item.id}>
-              <th>{idx + 1}</th>
-              <td>{formatString(item.name, "capitalize")}</td>
-              <td>{item.weight}</td>
-              <th>
-                <Dropdown>
-                  <List>
-                    <Button
-                      attributes={{
-                        className: "cursor-pointer",
-                        onClick: () =>
-                          handleTableAction(item.id as number, "EDIT"),
-                      }}
-                    >
-                      Edit
-                    </Button>
-                  </List>
-                  <List>
-                    <Button
-                      attributes={{
-                        onClick: () =>
-                          handleTableAction(item.id as number, "DESTROY"),
-                      }}
-                    >
-                      Hapus
-                    </Button>
-                  </List>
-                </Dropdown>
-              </th>
-            </tr>
-          ))}
-        </Table>
+
+        {isFetched && skillCriterias?.data.length === 0 && (
+          <EmptyTableData
+            title="Data kriteria kosong"
+            text="Silahkan menambahkan kriteria terlebih dahulu"
+          />
+        )}
+
+        {isFetched && skillCriterias && skillCriterias.data.length > 0 && (
+          <Table tableHead={tableHeadContent}>
+            {tableBodyContent.map((item, idx) => (
+              <tr key={item.id}>
+                <th>{idx + 1}</th>
+                <td>{formatString(item.name, "capitalize")}</td>
+                <td>{item.weight}</td>
+                <th>
+                  <Dropdown>
+                    <List>
+                      <Button
+                        attributes={{
+                          className: "cursor-pointer",
+                          onClick: () =>
+                            handleTableAction(item.id as number, "EDIT"),
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </List>
+                    {tableBodyContent.length > 1 && (
+                      <List>
+                        <Button
+                          attributes={{
+                            onClick: () =>
+                              handleTableAction(item.id as number, "DESTROY"),
+                          }}
+                        >
+                          Hapus
+                        </Button>
+                      </List>
+                    )}
+                  </Dropdown>
+                </th>
+              </tr>
+            ))}
+          </Table>
+        )}
       </main>
 
       <InsertUpdateModal

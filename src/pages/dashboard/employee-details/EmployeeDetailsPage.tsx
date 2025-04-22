@@ -198,6 +198,7 @@ export default function EmployeeDetails() {
   formAttr.action = formAction;
 
   function ErrorMessageRendered(message: string) {
+    console.log("🚀 ~ ErrorMessageRendered ~ message:", message);
     return (
       <div className="label">
         <span className="label-text-alt text-error">{message}</span>
@@ -305,7 +306,7 @@ export default function EmployeeDetails() {
                     labelType="form-control"
                     leftLabel="Keahlian"
                     bottomLeftLabel={ErrorMessageRendered(
-                      formState.errors?.skill as string
+                      formState.errors?.k1 as string
                     )}
                   >
                     <Input attributes={inputSkillAttr} />
@@ -314,7 +315,7 @@ export default function EmployeeDetails() {
                     labelType="form-control"
                     leftLabel="Pilih Jenjang Pendidikan"
                     bottomLeftLabel={ErrorMessageRendered(
-                      formState.errors?.education as string
+                      formState.errors?.k2 as string
                     )}
                   >
                     <Select attr={selectAttr}>
@@ -331,7 +332,7 @@ export default function EmployeeDetails() {
                     labelType="form-control"
                     leftLabel="Umur"
                     bottomLeftLabel={ErrorMessageRendered(
-                      formState.errors?.age as string
+                      formState.errors?.k3 as string
                     )}
                   >
                     <Input attributes={ageAttr} />
@@ -340,7 +341,7 @@ export default function EmployeeDetails() {
                     labelType="form-control"
                     leftLabel="Lama Bekerja"
                     bottomLeftLabel={ErrorMessageRendered(
-                      formState.errors?.experience as string
+                      formState.errors?.k4 as string
                     )}
                   >
                     <Input attributes={experienceAttr} />
@@ -349,7 +350,7 @@ export default function EmployeeDetails() {
                     labelType="form-control"
                     leftLabel="Jiwa kepemimpinan"
                     bottomLeftLabel={ErrorMessageRendered(
-                      formState.errors?.leadership as string
+                      formState.errors?.k5 as string
                     )}
                   >
                     <Input attributes={leaderAttr} />

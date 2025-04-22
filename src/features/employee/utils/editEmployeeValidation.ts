@@ -57,6 +57,11 @@ export function validateEmployeeData(data: IEmployeePayload) {
   if (!data.k5) {
     errors.k5 = "Leadership tidak boleh kosong.";
   }
+  if (+data.k5 < 1) {
+    errors.k5 = "Leadership tidak boleh kurang dari 1.";
+  } else if (+data.k5 > 100) {
+    errors.k5 = "Leadership tidak boleh lebih dari 100.";
+  }
 
   // Validasi age
   if (!data.k3) {
@@ -71,6 +76,11 @@ export function validateEmployeeData(data: IEmployeePayload) {
   // Validasi skill
   if (!data.k1) {
     errors.k1 = "Skill tidak boleh kosong.";
+  }
+  if (+data.k1 < 1) {
+    errors.k1 = "Skill tidak boleh kurang dari 1.";
+  } else if (+data.k1 > 100) {
+    errors.k1 = "Skill tidak boleh lebih dari 100.";
   }
 
   // Jika tidak ada error, maka isValid = true

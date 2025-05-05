@@ -35,10 +35,15 @@ export default function EmployeeDetails() {
   } = detailEmployeeAttributes;
   const { slug } = useParams<{ slug: string }>();
   const [toastStatus, setToastStatus] = useState(false);
-  const { employees, isFetched, editEmployee, isFetching, isPending } =
-    useEmployees({
-      id: slug,
-    });
+  const {
+    employees,
+    isFetched,
+    editEmployee,
+    isLoading: isLoadingPage,
+    isPending: isPendingPage,
+  } = useEmployees({
+    id: slug,
+  });
   const [initialValue, setInitialValue] = useState({
     k3: "",
     k2: "",
@@ -198,9 +203,12 @@ export default function EmployeeDetails() {
     return { errors: null };
   }
 
-  const [formState, formAction] = useActionState(handleUpdateEmployee, {
-    errors: null,
-  });
+  const [formState, formAction, isPending] = useActionState(
+    handleUpdateEmployee,
+    {
+      errors: null,
+    }
+  );
 
   formAttr.action = formAction;
 
@@ -212,7 +220,7 @@ export default function EmployeeDetails() {
     );
   }
 
-  if (isFetching || isPending) {
+  if (isPendingPage || isLoadingPage) {
     <Loading loadingType="loading-bars" />;
   }
 
@@ -374,8 +382,13 @@ export default function EmployeeDetails() {
 
               {/* Action */}
               <footer className="flex justify-end gap-2 mt-3">
-                <Button attributes={{ ...submitAttr, disabled: isLoading }}>
-                  {isLoading ? "Mengirim..." : "Simpan"}
+                <Button
+                  attributes={{
+                    ...submitAttr,
+                    disabled: isLoading || isPending,
+                  }}
+                >
+                  {isLoading || isPending ? "Mengirim..." : "Simpan"}
                 </Button>
               </footer>
             </Form>

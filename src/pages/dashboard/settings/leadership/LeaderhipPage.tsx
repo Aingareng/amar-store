@@ -24,10 +24,16 @@ export default function LeadershipPage() {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [disableAddButton, setDisableAddButton] = useState<boolean>(false);
 
-  const { criterias, isFetched, isFetching, isPending, destroyLeadership } =
-    useLeaderhip({
-      search: enteredValues.search || "",
-    });
+  const {
+    criterias,
+    isFetched,
+    isFetching,
+    isPending,
+    isLoading,
+    destroyLeadership,
+  } = useLeaderhip({
+    search: enteredValues.search || "",
+  });
 
   let tableBodyContent: ILeadershipTableData[] = [];
 
@@ -126,7 +132,7 @@ export default function LeadershipPage() {
     </tr>
   );
 
-  if (isFetching || isPending) {
+  if ((isFetching && isPending) || isLoading) {
     return <Loading loadingType="loading-bars" />;
   }
 

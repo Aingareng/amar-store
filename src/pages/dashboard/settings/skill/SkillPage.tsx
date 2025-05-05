@@ -26,8 +26,9 @@ export default function SkillPage() {
   const {
     skillCriterias,
     isFetched,
-    isFetching,
+    isLoading,
     isPending,
+    isFetching,
     destroySkillCriteria,
   } = useSkillCriteria({
     search: filterValue?.search || "",
@@ -130,7 +131,7 @@ export default function SkillPage() {
     }
   }, [skillCriterias]);
 
-  if (isFetching || isPending) {
+  if ((isFetching && isPending) || isLoading) {
     return <Loading loadingType="loading-bars" />;
   }
 

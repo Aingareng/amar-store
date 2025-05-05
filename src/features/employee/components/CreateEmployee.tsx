@@ -130,7 +130,7 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
     return { errors: null };
   }
 
-  const [formState, formAction] = useActionState(handleAddEmployee, {
+  const [formState, formAction, isPending] = useActionState(handleAddEmployee, {
     errors: null,
   });
 
@@ -415,12 +415,15 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
                 className: "btn btn-outline btn-error",
                 type: "button",
                 onClick: handleCancel,
+                disabled: isLoading || isPending,
               }}
             >
               Batal
             </Button>
-            <Button attributes={{ ...submitAttr, disabled: isLoading }}>
-              {isLoading ? "Mengirim..." : "Tambahkan"}
+            <Button
+              attributes={{ ...submitAttr, disabled: isLoading || isPending }}
+            >
+              {isLoading || isPending ? "Mengirim..." : "Tambahkan"}
             </Button>
           </footer>
         </Form>

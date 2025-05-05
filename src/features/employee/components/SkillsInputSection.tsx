@@ -42,7 +42,8 @@ export default function SkillsInputSection({
     }, 0);
 
     onSkillCountChange(totalWeight, type);
-  }, [enteredValue, criterias, onSkillCountChange, type]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enteredValue, onSkillCountChange, type]);
 
   return (
     <div className="grid grid-cols-1 col-span-2 ">

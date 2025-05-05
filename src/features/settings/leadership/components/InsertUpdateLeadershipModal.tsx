@@ -143,10 +143,10 @@ function InsertUpdateLeadershipModal({
     };
   }
 
-  const [formState, formAction] = useActionState<InitialFormState, FormData>(
-    handleUpdateCriteria,
-    { payload: { name: "", weight: 0 } }
-  );
+  const [formState, formAction, isPending] = useActionState<
+    InitialFormState,
+    FormData
+  >(handleUpdateCriteria, { payload: { name: "", weight: 0 } });
 
   function handleResetForm(type: "UPDATE" | "CREATE") {
     if (type === "UPDATE") {
@@ -221,6 +221,7 @@ function InsertUpdateLeadershipModal({
                 type: "reset",
                 className: "btn btn-error btn-outline",
                 onClick: () => handleResetForm(type),
+                disabled: isLoading || isPending,
               }}
             >
               Reset
@@ -229,10 +230,10 @@ function InsertUpdateLeadershipModal({
               attributes={{
                 type: "submit",
                 className: "btn btn-primary",
-                disabled: isLoading,
+                disabled: isLoading || isPending,
               }}
             >
-              {isLoading
+              {isLoading || isPending
                 ? "Mengirim..."
                 : type === "CREATE"
                 ? "Tambah"

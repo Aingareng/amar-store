@@ -18,9 +18,10 @@ export default function CriteriaPage() {
   const [searchValue, setSearchValue] = useState("");
   // const [toastStatus, setToastStatus] = useState(false);
 
-  const { criterias, isPending, isFetching, deleteCriteria } = useCriteria({
-    search: searchValue,
-  });
+  const { criterias, isPending, isFetching, isLoading, deleteCriteria } =
+    useCriteria({
+      search: searchValue,
+    });
 
   // const { data: criteria } = useCriteriaById(itemId);
 
@@ -84,7 +85,7 @@ export default function CriteriaPage() {
     </main>
   );
 
-  if (isFetching || isPending) {
+  if (isLoading || (isFetching && isPending)) {
     mainContent = <Loading loadingType="loading-bars" />;
   }
 

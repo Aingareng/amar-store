@@ -17,10 +17,16 @@ import EmptyTableData from "../../../shared/components/molecules/EmptyTableData"
 export default function Employees() {
   const [toastStatus, setToastStatus] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  const { employees, deleteEmployee, isFetching, isPending, isFetched } =
-    useEmployees({
-      search: searchInput,
-    });
+  const {
+    employees,
+    deleteEmployee,
+    isLoading,
+    isPending,
+    isFetching,
+    isFetched,
+  } = useEmployees({
+    search: searchInput,
+  });
 
   function handleSearchInput(input: string) {
     setSearchInput(input);
@@ -109,7 +115,7 @@ export default function Employees() {
     </main>
   );
 
-  if (isFetching || isPending) {
+  if (isLoading || (isPending && isFetching)) {
     mainContent = <Loading loadingType="loading-bars" />;
   }
 

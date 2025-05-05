@@ -89,6 +89,8 @@ function InsertUpdateModal({
     const existSkillCriteria =
       localStorageUtils.get<ISkillTableData[]>("skillCriteria");
 
+    setIsLoading(true);
+
     if (type === "CREATE") {
       if (existSkillCriteria && existSkillCriteria.length > 0) {
         const totalWeight = existSkillCriteria.reduce(
@@ -106,9 +108,8 @@ function InsertUpdateModal({
           };
         }
       }
-      setIsLoading(true);
+
       const result = await createSkillCriteria({ name, weight: +weight });
-      setIsLoading(false);
       onSendingStatus(result.status);
     }
     if (type === "UPDATE" && id) {
@@ -129,24 +130,25 @@ function InsertUpdateModal({
           };
         }
       }
-      setIsLoading(true);
+
       const result = await updateSkillCriteria({
         id,
         payload: { name, weight: +weight },
       });
-      setIsLoading(false);
+
       onSendingStatus(result.status);
     }
+    setIsLoading(false);
 
     return {
       payload: { name, weight: +weight },
     };
   }
 
-  const [formState, formAction] = useActionState<InitialFormState, FormData>(
-    handleUpdateCriteria,
-    { payload: { name: "", weight: 0 } }
-  );
+  const [formState, formAction, isPending] = useActionState<
+    InitialFormState,
+    FormData
+  >(handleUpdateCriteria, { payload: { name: "", weight: 0 } });
 
   function handleResetForm(type: "UPDATE" | "CREATE") {
     if (type === "UPDATE") {
@@ -229,10 +231,10 @@ function InsertUpdateModal({
               attributes={{
                 type: "submit",
                 className: "btn btn-primary",
-                disabled: isLoading,
+                disabled: isLoading || isPending,
               }}
             >
-              {isLoading
+              {isLoading || isPending
                 ? "Mengirim..."
                 : type === "CREATE"
                 ? "Tambah"

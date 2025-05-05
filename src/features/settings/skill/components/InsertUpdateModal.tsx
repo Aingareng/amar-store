@@ -45,7 +45,6 @@ function InsertUpdateModal({
   const [initialSkill, setInitialSkill] = useState<ISkillTableData | null>();
   const { createSkillCriteria, updateSkillCriteria } = useSkillCriteria();
   const [isLoading, setIsLoading] = useState(false);
-  console.log("🚀 ~ isLoading:", isLoading);
 
   useEffect(() => {
     if (type === "UPDATE" && initialData) {
@@ -223,6 +222,7 @@ function InsertUpdateModal({
                 type: "reset",
                 className: "btn btn-error btn-outline",
                 onClick: () => handleResetForm(type),
+                disabled: isLoading || isPending,
               }}
             >
               Reset

@@ -18,7 +18,6 @@ export default function useEmployees(params?: IEmployeeQueryParams) {
     isFetched,
     isFetching,
   } = useQuery({
-    initialData: [],
     queryKey: ["employees", params],
     queryFn: () => getEmployees(params as IEmployeeQueryParams),
   });

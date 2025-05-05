@@ -49,7 +49,7 @@ export interface IEmployeePayload {
   phone: string;
   // isMale: boolean;
   k3: string;
-  gender: "male" | "female";
+  isMale: "male" | "female";
   k2: string;
   k4: string;
   k5: string;

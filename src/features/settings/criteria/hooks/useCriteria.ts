@@ -25,7 +25,6 @@ export default function useCriteria(params?: ICriteriaQueryParams) {
   } = useQuery({
     queryKey: ["criterias", params],
     queryFn: () => getCriteria(params as ICriteriaQueryParams),
-    initialData: [],
   });
 
   const updateMutation = useMutation({

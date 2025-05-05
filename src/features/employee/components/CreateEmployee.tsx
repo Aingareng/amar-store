@@ -43,7 +43,7 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
     password: "",
     position: "",
     phone: "",
-    gender: "male",
+    isMale: "male",
     k4: "",
     k5: "",
     k3: "",
@@ -75,7 +75,7 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
   function handleGenderChange(event: ChangeEvent<HTMLInputElement>) {
     setFormData((prev) => ({
       ...prev,
-      gender: event.target.value as "male" | "female",
+      isMale: event.target.value as "male" | "female",
     }));
   }
 
@@ -148,7 +148,7 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
       k2: "",
       email: "",
       k4: "",
-      gender: "male",
+      isMale: "male",
       k5: "",
       password: "",
       phone: "",
@@ -280,10 +280,10 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
                   <Input
                     attributes={{
                       type: "radio",
-                      name: "gender",
+                      name: "isMale",
                       className: "radio radio-primary",
                       value: "male",
-                      checked: formData.gender === "male",
+                      checked: formData.isMale === "male",
                       onChange: handleGenderChange,
                     }}
                   />
@@ -292,10 +292,10 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
                   <Input
                     attributes={{
                       type: "radio",
-                      name: "gender",
+                      name: "isMale",
                       className: "radio radio-primary",
                       value: "female",
-                      checked: formData.gender === "female",
+                      checked: formData.isMale === "female",
                       onChange: handleGenderChange,
                     }}
                   />

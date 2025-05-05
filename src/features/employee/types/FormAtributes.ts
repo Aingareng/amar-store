@@ -31,14 +31,14 @@ const inputPhoneNumber: React.InputHTMLAttributes<HTMLInputElement> = {
 };
 const genderManAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "radio",
-  name: "gender",
+  name: "isMale",
   className: "radio ml-2 radio-primary",
   defaultChecked: true,
   value: "male",
 };
 const genderWomenAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "radio",
-  name: "gender",
+  name: "isMale",
   className: "radio ml-2 radio-primary",
   value: "female",
 };

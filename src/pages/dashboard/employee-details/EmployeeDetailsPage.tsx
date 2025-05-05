@@ -45,35 +45,37 @@ export default function EmployeeDetails() {
     id: slug,
   });
   const [initialValue, setInitialValue] = useState({
-    k3: "",
+    k1: "",
     k2: "",
-    email: "",
+    k3: "",
     k4: "",
-    gender: "",
     k5: "",
+    username: "",
+    email: "",
+    isMale: "",
     password: "",
     phone: "",
     position: "",
-    k1: "",
   });
 
-  const employee = employees[0] || initialValue;
+  const employee = employees?.data[0] || initialValue;
 
   useEffect(() => {
     if (isFetched) {
       setInitialValue((prevState) => {
         const updatedEmployee = {
           ...prevState,
+          k1: employee.k1,
+          k2: employee.k2,
           k3: employee.k3.toString(),
           k4: employee.k4.toString(),
-          gender: employee.isMale ? "male" : "female",
-          email: employee.email,
-          k2: employee.k2,
           k5: employee.k5,
+          username: employee.username,
+          isMale: employee.isMale ? "male" : "female",
+          email: employee.email,
           password: employee.password,
           phone: employee.phone,
           position: employee.position,
-          k1: employee.k1,
         };
 
         return updatedEmployee;
@@ -114,13 +116,13 @@ export default function EmployeeDetails() {
   selectAttr.onChange = (event: ChangeEvent<HTMLSelectElement>) =>
     handleSelectChange("k4", event);
 
-  genderManAttr.value = initialValue.gender;
+  genderManAttr.value = initialValue.isMale;
   genderManAttr.onChange = () => handleGenderChange("male");
-  genderWomenAttr.checked = initialValue.gender === "male";
+  genderWomenAttr.checked = initialValue.isMale === "male";
 
-  genderWomenAttr.value = initialValue.gender;
+  genderWomenAttr.value = initialValue.isMale;
   genderWomenAttr.onChange = () => handleGenderChange("female");
-  genderWomenAttr.checked = initialValue.gender === "female";
+  genderWomenAttr.checked = initialValue.isMale === "female";
 
   // formAttr.action =
 
@@ -153,7 +155,7 @@ export default function EmployeeDetails() {
   function handleGenderChange(event: "male" | "female") {
     setInitialValue((prev) => ({
       ...prev,
-      gender: event as "male" | "female",
+      isMale: event as "male" | "female",
     }));
   }
 
@@ -162,7 +164,7 @@ export default function EmployeeDetails() {
       ...initialValue,
       k3: String(initialValue.k3),
       k4: String(initialValue.k4),
-      gender: initialValue.gender as "male" | "female",
+      isMale: initialValue.isMale as "male" | "female",
       k2: String(initialValue.k2),
       k5: String(initialValue.k5),
       k1: String(initialValue.k1),
@@ -180,9 +182,10 @@ export default function EmployeeDetails() {
       id: slug as string,
       employeeData: {
         ...initialValue,
+        username: employee.username,
         k4: initialValue.k4,
         k3: initialValue.k3,
-        gender: initialValue.gender as "male" | "female",
+        isMale: initialValue.isMale as "male" | "female",
         k2: String(initialValue.k2),
         k5: String(initialValue.k5),
         k1: String(initialValue.k1),

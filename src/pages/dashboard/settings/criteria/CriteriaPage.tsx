@@ -65,28 +65,8 @@ export default function CriteriaPage() {
   //   insertEditDialogRef.current?.close();
   // }
 
-  let mainContent = (
-    <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
-      <CriteriaFilter onSearch={handleFilterTable} />
-
-      {criterias.length === 0 && (
-        <EmptyTableData
-          title="Data kriteria kosong"
-          text="Silakan tambahkan kriteria"
-        />
-      )}
-
-      {criterias.length > 0 && (
-        <CriteriaTable
-          criteriaData={criterias}
-          // tableAction={handleTableAction}
-        />
-      )}
-    </main>
-  );
-
   if (isLoading || (isFetching && isPending)) {
-    mainContent = <Loading loadingType="loading-bars" />;
+    return <Loading loadingType="loading-bars" />;
   }
 
   // let toastContent = "";
@@ -126,7 +106,21 @@ export default function CriteriaPage() {
         </Button> */}
       </header>
 
-      {mainContent}
+      <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
+        <CriteriaFilter onSearch={handleFilterTable} />
+
+        {criterias && criterias.data?.length === 0 ? (
+          <EmptyTableData
+            title="Data kriteria kosong"
+            text="Silakan tambahkan kriteria"
+          />
+        ) : (
+          <CriteriaTable
+            criteriaData={criterias?.data || []}
+            // tableAction={handleTableAction}
+          />
+        )}
+      </main>
 
       {/* Modal section */}
       {/* <InsertUpdateCriteria

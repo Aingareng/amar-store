@@ -7,15 +7,10 @@ import {
 } from "../types/criteria";
 
 export async function getCriteria(params: ICriteriaQueryParams) {
-  const response = await api.get<ICriteriaResponse>("/criterias", {
+  return await api.get<ICriteriaResponse>("/criterias", {
     ...params,
     id: params.id?.toString() as string,
   });
-
-  if (response.status != 200) {
-    return [];
-  }
-  return response.data as ICriteriaData[];
 }
 
 export async function findCriteria({ id }: ICriteriaQueryParams) {

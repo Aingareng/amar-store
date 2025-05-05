@@ -17,16 +17,10 @@ import EmptyTableData from "../../../shared/components/molecules/EmptyTableData"
 export default function Employees() {
   const [toastStatus, setToastStatus] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  const {
-    employees,
-    deleteEmployee,
-    isLoading,
-    isPending,
-    isFetching,
-    isFetched,
-  } = useEmployees({
-    search: searchInput,
-  });
+  const { employees, deleteEmployee, isLoading, isPending, isFetching } =
+    useEmployees({
+      search: searchInput,
+    });
 
   function handleSearchInput(input: string) {
     setSearchInput(input);
@@ -51,8 +45,12 @@ export default function Employees() {
     </tr>
   );
 
-  let mainContent = (
-    <main className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
+  if (isLoading || (isPending && isFetching)) {
+    return <Loading loadingType="loading-bars" />;
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-3 bg-base-100 p-4 rounded-2xl">
       {toastStatus && (
         <Toast>
           <Alert>
@@ -65,16 +63,16 @@ export default function Employees() {
         <EmployeeFilter onSearch={handleSearchInput} />
       </div>
 
-      {isFetched && employees.length === 0 && (
+      {employees && employees.data.length === 0 && (
         <EmptyTableData
           title="Data Karyawan kosong"
           text="Silahkan menambahkan karyawan terlebih dahulu"
         />
       )}
 
-      {isFetched && employees.length > 0 && (
+      {employees && employees?.data.length > 0 && (
         <Table tableHead={tableHead}>
-          {employees.map((item, index) => (
+          {employees.data.map((item, index) => (
             <tr key={index} className="hover">
               <th>{index + 1}</th>
               <td>
@@ -112,12 +110,6 @@ export default function Employees() {
           ))}
         </Table>
       )}
-    </main>
+    </div>
   );
-
-  if (isLoading || (isPending && isFetching)) {
-    mainContent = <Loading loadingType="loading-bars" />;
-  }
-
-  return mainContent;
 }

@@ -13,6 +13,7 @@ import { useToast } from "../../../../shared/hooks/useToast";
 import InsertUpdateLeadershipModal from "../../../../features/settings/leadership/components/InsertUpdateLeadershipModal";
 import EmptyTableData from "../../../../shared/components/molecules/EmptyTableData";
 import localStorageUtils from "../../../../shared/utils/localStorage";
+import Loading from "../../../../shared/components/atoms/Loading";
 
 export default function LeadershipPage() {
   const [enteredValues, setEnteredValues] = useState<FilterValues>({
@@ -23,9 +24,10 @@ export default function LeadershipPage() {
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const [disableAddButton, setDisableAddButton] = useState<boolean>(false);
 
-  const { criterias, isFetched, destroyLeadership } = useLeaderhip({
-    search: enteredValues.search || "",
-  });
+  const { criterias, isFetched, isFetching, isPending, destroyLeadership } =
+    useLeaderhip({
+      search: enteredValues.search || "",
+    });
 
   let tableBodyContent: ILeadershipTableData[] = [];
 
@@ -123,6 +125,10 @@ export default function LeadershipPage() {
       <th>Aksi</th>
     </tr>
   );
+
+  if (isFetching || isPending) {
+    return <Loading loadingType="loading-bars" />;
+  }
 
   return (
     <div className="grid grid-cols-1 gap-5">

@@ -34,6 +34,7 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
   const { createEmployee } = useEmployees();
   const { skillCriterias } = useSkillCriteria();
   const { criterias } = useLeaderhip();
+  const [isLoading, setIsLoading] = useState(false);
 
   // State untuk form inputs
   const [formData, setFormData] = useState<IEmployeePayload>({
@@ -114,8 +115,9 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
       k4: String(calculateExperience(formData.k4)),
       k3: String(calculateAge(formData.k3)),
     };
-
+    setIsLoading(true);
     const response = await createEmployee(payload);
+    setIsLoading(false);
 
     if (response.status !== 400 && response.status !== 500) {
       handleResetForm();
@@ -417,7 +419,9 @@ export default function CreateEmployee({ ref, onShowToast, onClose }: IProps) {
             >
               Batal
             </Button>
-            <Button attributes={submitAttr}>Tambah</Button>
+            <Button attributes={{ ...submitAttr, disabled: isLoading }}>
+              {isLoading ? "Mengirim..." : "Tambahkan"}
+            </Button>
           </footer>
         </Form>
       </div>

@@ -7,39 +7,39 @@ const inputUsernameAttr: React.InputHTMLAttributes<HTMLInputElement> = {
 const inputEmailAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "email",
   name: "email",
-  className: "input input-bordered w-full",
+  className: "input input-bordered border-neutral w-full",
   placeholder: "Cth: John@example.com",
 };
 
 const inputIdentityNumber: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "password",
   name: "password",
-  className: "input input-bordered w-full",
+  className: "input input-bordered border-neutral w-full",
   placeholder: "Masukan NIP",
 };
 const inputPosition: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "text",
   name: "position",
-  className: "input input-bordered w-full",
+  className: "input input-bordered border-neutral w-full",
   placeholder: "Cth: Manager",
 };
 const inputPhoneNumber: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "text",
   name: "phone",
-  className: "input input-bordered w-full",
+  className: "input input-bordered border-neutral w-full",
   placeholder: "Cth: 08xxxxxxx",
 };
 const genderManAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "radio",
   name: "gender",
-  className: "radio radio-primary",
+  className: "radio ml-2 radio-primary",
   defaultChecked: true,
   value: "male",
 };
 const genderWomenAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "radio",
   name: "gender",
-  className: "radio radio-primary",
+  className: "radio ml-2 radio-primary",
   value: "female",
 };
 const formAttr: React.FormHTMLAttributes<HTMLFormElement> = {
@@ -51,30 +51,30 @@ const submitAttr: React.ButtonHTMLAttributes<HTMLButtonElement> = {
 };
 const selectAttr: React.SelectHTMLAttributes<HTMLSelectElement> = {
   name: "education",
-  className: "select select-bordered",
+  className: "select select-bordered border-neutral",
 };
 const ageAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "number",
   name: "age",
-  className: "input input-bordered w-full",
+  className: "input border-none w-full",
 };
 
 const experienceAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "number",
   name: "experience",
-  className: "input input-bordered w-full",
+  className: "input border-none w-full",
 };
 const leaderAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "number",
   name: "leadership",
-  className: "input input-bordered w-full",
+  className: "input input-bordered border-neutral w-full",
   min: 0,
 };
 
 const inputSkillAttr: React.InputHTMLAttributes<HTMLInputElement> = {
   type: "number",
   name: "username",
-  className: "input input-bordered w-full",
+  className: "input input-bordered border-neutral w-full",
   placeholder: "Masukan Nama Lengkap",
   min: 0,
 };

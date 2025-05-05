@@ -13,8 +13,11 @@ import { validateEmployeeData } from "../../../features/employee/utils/editEmplo
 import Toast from "../../../shared/components/molecules/Toast";
 import Alert from "../../../shared/components/atoms/Alert";
 import getInitials from "../../../shared/utils/initialString";
+import Loading from "../../../shared/components/atoms/Loading";
 
 export default function EmployeeDetails() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     ageAttr,
     experienceAttr,
@@ -32,9 +35,10 @@ export default function EmployeeDetails() {
   } = detailEmployeeAttributes;
   const { slug } = useParams<{ slug: string }>();
   const [toastStatus, setToastStatus] = useState(false);
-  const { employees, isFetched, editEmployee } = useEmployees({
-    id: slug,
-  });
+  const { employees, isFetched, editEmployee, isFetching, isPending } =
+    useEmployees({
+      id: slug,
+    });
   const [initialValue, setInitialValue] = useState({
     k3: "",
     k2: "",
@@ -179,7 +183,10 @@ export default function EmployeeDetails() {
         k1: String(initialValue.k1),
       },
     };
+
+    setIsLoading(true);
     const response = await editEmployee(payload);
+    setIsLoading(false);
 
     if (response.status !== 400 && response.status !== 500) {
       setToastStatus(true);
@@ -198,7 +205,6 @@ export default function EmployeeDetails() {
   formAttr.action = formAction;
 
   function ErrorMessageRendered(message: string) {
-    console.log("🚀 ~ ErrorMessageRendered ~ message:", message);
     return (
       <div className="label">
         <span className="label-text-alt text-error">{message}</span>
@@ -206,8 +212,8 @@ export default function EmployeeDetails() {
     );
   }
 
-  if (!isFetched && employees.length === 0) {
-    return <p>Loading</p>;
+  if (isFetching || isPending) {
+    <Loading loadingType="loading-bars" />;
   }
 
   return (
@@ -282,13 +288,13 @@ export default function EmployeeDetails() {
                   <div className="flex items-center justify-start gap-2 w ">
                     <RadioButton
                       label="Laki-laki"
-                      attributes={{ className: "w-[15%]" }}
+                      attributes={{ className: "" }}
                     >
                       <Input attributes={genderManAttr} />
                     </RadioButton>
                     <RadioButton
                       label="Perempuan"
-                      attributes={{ className: "w-[15%]" }}
+                      attributes={{ className: "" }}
                     >
                       <Input attributes={genderWomenAttr} />
                     </RadioButton>
@@ -328,6 +334,7 @@ export default function EmployeeDetails() {
                       <option value="5">S2</option>
                     </Select>
                   </Label>
+
                   <Label
                     labelType="form-control"
                     leftLabel="Umur"
@@ -335,8 +342,12 @@ export default function EmployeeDetails() {
                       formState.errors?.k3 as string
                     )}
                   >
-                    <Input attributes={ageAttr} />
+                    <div className="flex w-full gap-3 border border-neutral items-center overflow-hidden  rounded-xl">
+                      <Input attributes={ageAttr} />
+                      <span className="px-2">Tahun</span>
+                    </div>
                   </Label>
+
                   <Label
                     labelType="form-control"
                     leftLabel="Lama Bekerja"
@@ -344,7 +355,10 @@ export default function EmployeeDetails() {
                       formState.errors?.k4 as string
                     )}
                   >
-                    <Input attributes={experienceAttr} />
+                    <div className="flex w-full gap-3 border border-neutral items-center overflow-hidden  rounded-xl">
+                      <Input attributes={experienceAttr} />
+                      <span className="px-2">Tahun</span>
+                    </div>
                   </Label>
                   <Label
                     labelType="form-control"
@@ -360,7 +374,9 @@ export default function EmployeeDetails() {
 
               {/* Action */}
               <footer className="flex justify-end gap-2 mt-3">
-                <Button attributes={submitAttr}>Simpan</Button>
+                <Button attributes={{ ...submitAttr, disabled: isLoading }}>
+                  {isLoading ? "Mengirim..." : "Simpan"}
+                </Button>
               </footer>
             </Form>
           </div>

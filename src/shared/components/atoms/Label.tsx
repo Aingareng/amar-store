@@ -19,7 +19,7 @@ const Label = ({
 }: IProps) => {
   const labelTypeClasses =
     labelType === "form-control"
-      ? "form-control"
+      ? "form-control flex item"
       : "input input-bordered flex items-center gap-2";
 
   const labelElement = (

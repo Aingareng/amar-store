@@ -44,6 +44,8 @@ function InsertUpdateModal({
 }: IProps) {
   const [initialSkill, setInitialSkill] = useState<ISkillTableData | null>();
   const { createSkillCriteria, updateSkillCriteria } = useSkillCriteria();
+  const [isLoading, setIsLoading] = useState(false);
+  console.log("🚀 ~ isLoading:", isLoading);
 
   useEffect(() => {
     if (type === "UPDATE" && initialData) {
@@ -104,7 +106,9 @@ function InsertUpdateModal({
           };
         }
       }
+      setIsLoading(true);
       const result = await createSkillCriteria({ name, weight: +weight });
+      setIsLoading(false);
       onSendingStatus(result.status);
     }
     if (type === "UPDATE" && id) {
@@ -125,11 +129,12 @@ function InsertUpdateModal({
           };
         }
       }
-
+      setIsLoading(true);
       const result = await updateSkillCriteria({
         id,
         payload: { name, weight: +weight },
       });
+      setIsLoading(false);
       onSendingStatus(result.status);
     }
 
@@ -224,9 +229,14 @@ function InsertUpdateModal({
               attributes={{
                 type: "submit",
                 className: "btn btn-primary",
+                disabled: isLoading,
               }}
             >
-              {type === "CREATE" ? "Tambah" : "Simpan"}
+              {isLoading
+                ? "Mengirim..."
+                : type === "CREATE"
+                ? "Tambah"
+                : "Simpan"}
             </Button>
           </div>
         </Form>

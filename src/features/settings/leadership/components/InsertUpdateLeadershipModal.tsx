@@ -46,6 +46,7 @@ function InsertUpdateLeadershipModal({
   const [initialSkill, setInitialSkill] =
     useState<ILeadershipTableData | null>();
   const { createLeadership, updateLeadership } = useLeaderhip();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (type === "UPDATE" && initialData) {
@@ -106,7 +107,9 @@ function InsertUpdateLeadershipModal({
           };
         }
       }
+      setIsLoading(true);
       const result = await createLeadership({ name, weight: +weight });
+      setIsLoading(false);
       onSendingStatus(result.status);
     }
     if (type === "UPDATE" && id) {
@@ -226,9 +229,14 @@ function InsertUpdateLeadershipModal({
               attributes={{
                 type: "submit",
                 className: "btn btn-primary",
+                disabled: isLoading,
               }}
             >
-              {type === "CREATE" ? "Tambah" : "Simpan"}
+              {isLoading
+                ? "Mengirim..."
+                : type === "CREATE"
+                ? "Tambah"
+                : "Simpan"}
             </Button>
           </div>
         </Form>

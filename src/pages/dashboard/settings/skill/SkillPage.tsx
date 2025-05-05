@@ -131,7 +131,7 @@ export default function SkillPage() {
   }, [skillCriterias]);
 
   if (isFetching || isPending) {
-    return <Loading />;
+    return <Loading loadingType="loading-bars" />;
   }
 
   return (

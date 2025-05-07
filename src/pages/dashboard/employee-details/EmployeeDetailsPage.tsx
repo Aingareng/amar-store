@@ -107,14 +107,14 @@ export default function EmployeeDetails() {
 
   experienceAttr.value = initialValue.k4;
   // toISOString().split("T")[0];
-  experienceAttr.onChange = (e) => handleTextInputChange("experience", e);
+  experienceAttr.onChange = (e) => handleTextInputChange("k4", e);
 
   leaderAttr.value = initialValue.k5;
   leaderAttr.onChange = (e) => handleTextInputChange("k5", e);
 
-  selectAttr.value = initialValue.k4;
+  selectAttr.value = initialValue.k2;
   selectAttr.onChange = (event: ChangeEvent<HTMLSelectElement>) =>
-    handleSelectChange("k4", event);
+    handleSelectChange("k2", event);
 
   genderManAttr.value = initialValue.isMale;
   genderManAttr.onChange = () => handleGenderChange("male");
@@ -342,7 +342,6 @@ export default function EmployeeDetails() {
                       <option value="2">SMA/SMK</option>
                       <option value="3">D3</option>
                       <option value="4">S1</option>
-                      <option value="5">S2</option>
                     </Select>
                   </Label>
 
